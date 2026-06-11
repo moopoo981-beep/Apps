@@ -1,0 +1,1926 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Premium app, Purple Cat. | Agent Panel</title>
+  <meta name="description" content="เว็บตัวแทน Premium app, Purple Cat. สำหรับเติมเครดิต กดซื้อสินค้า และดูประวัติรายการ" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+  <style>
+    :root {
+      --bg: #fff6fb;
+      --bg-2: #fffaf0;
+      --text: #211827;
+      --muted: #7a6b82;
+      --card: rgba(255, 255, 255, .82);
+      --card-solid: #ffffff;
+      --line: rgba(47, 30, 55, .10);
+      --pink: #ff4fa3;
+      --pink-2: #ff7cc3;
+      --purple: #7b4cff;
+      --yellow: #ffd166;
+      --green: #16a36d;
+      --red: #e63956;
+      --dark: #201226;
+      --shadow: 0 24px 80px rgba(150, 73, 122, .18);
+      --shadow-soft: 0 12px 35px rgba(115, 58, 100, .13);
+      --radius: 24px;
+      --radius-sm: 16px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Prompt', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 8% 5%, rgba(255, 79, 163, .20), transparent 31%),
+        radial-gradient(circle at 92% 10%, rgba(123, 76, 255, .18), transparent 30%),
+        radial-gradient(circle at 50% 100%, rgba(255, 209, 102, .20), transparent 34%),
+        linear-gradient(135deg, var(--bg), #ffffff 45%, var(--bg-2));
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background-image:
+        linear-gradient(rgba(255, 79, 163, .055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 79, 163, .055) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,.8), rgba(0,0,0,.12));
+    }
+
+    a { color: inherit; }
+    .hidden { display: none !important; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      background: rgba(255,255,255,.72);
+      border-bottom: 1px solid rgba(255,255,255,.74);
+      box-shadow: 0 10px 35px rgba(88, 45, 88, .08);
+    }
+    .topbar-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .brand-wrap { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white;
+      font-weight: 900;
+      font-size: 22px;
+      box-shadow: 0 12px 30px rgba(255, 79, 163, .35);
+      flex: 0 0 auto;
+    }
+    .brand-title { font-size: clamp(18px, 3vw, 24px); font-weight: 800; letter-spacing: -.03em; line-height: 1.08; }
+    .brand-subtitle { color: var(--muted); font-size: 12px; margin-top: 2px; }
+    .user-pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.88);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      box-shadow: var(--shadow-soft);
+      font-size: 13px;
+      max-width: 210px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 18px 56px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 34px;
+      padding: clamp(24px, 5vw, 44px);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.90), rgba(255,255,255,.58)),
+        linear-gradient(135deg, rgba(255,79,163,.18), rgba(123,76,255,.12));
+      border: 1px solid rgba(255,255,255,.72);
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 330px;
+      height: 330px;
+      right: -130px;
+      top: -130px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,79,163,.34), transparent 65%);
+      pointer-events: none;
+    }
+    .hero-grid { display: grid; grid-template-columns: 1.35fr .65fr; gap: 20px; align-items: center; position: relative; z-index: 1; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,79,163,.12);
+      color: #b81e71;
+      border: 1px solid rgba(255,79,163,.18);
+      font-weight: 700;
+      font-size: 13px;
+    }
+    h1, h2, h3 { margin: 0; letter-spacing: -.03em; }
+    .hero h1 { font-size: clamp(32px, 7vw, 62px); line-height: .98; margin: 16px 0 12px; }
+    .hero p { color: var(--muted); margin: 0; font-size: 15px; line-height: 1.75; }
+    .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px; }
+    .hero-card {
+      background: rgba(255,255,255,.70);
+      border: 1px solid rgba(255,255,255,.86);
+      border-radius: 26px;
+      padding: 18px;
+      box-shadow: var(--shadow-soft);
+    }
+    .credit-big { font-size: clamp(32px, 5vw, 52px); font-weight: 900; color: var(--dark); line-height: 1; }
+    .credit-big span { color: var(--pink); }
+
+    .card, .page-card {
+      background: var(--card);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,.78);
+      border-radius: var(--radius);
+      padding: clamp(18px, 4vw, 28px);
+      box-shadow: var(--shadow-soft);
+      margin-bottom: 18px;
+    }
+    .section-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; margin-bottom: 18px; }
+    .section-head p, .muted { color: var(--muted); font-size: 14px; line-height: 1.7; }
+    .section-title { display: flex; align-items: center; gap: 10px; }
+    .section-icon {
+      width: 42px; height: 42px; border-radius: 15px;
+      display: grid; place-items: center;
+      background: linear-gradient(135deg, rgba(255,79,163,.20), rgba(123,76,255,.14));
+    }
+
+    .auth-shell { display: grid; grid-template-columns: .95fr 1.05fr; gap: 22px; align-items: stretch; }
+    .auth-hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 30px;
+      padding: 28px;
+      color: white;
+      background: linear-gradient(135deg, #211226, #7b2d76 46%, #ff4fa3);
+      min-height: 390px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .auth-hero::before {
+      content: '';
+      position: absolute;
+      inset: -120px -120px auto auto;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.18);
+    }
+    .auth-hero h1 { font-size: clamp(34px, 6vw, 58px); line-height: 1; position: relative; z-index: 1; }
+    .auth-hero p { color: rgba(255,255,255,.82); line-height: 1.8; position: relative; z-index: 1; }
+    .auth-list { display: grid; gap: 10px; position: relative; z-index: 1; }
+    .auth-list div {
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.13);
+      border: 1px solid rgba(255,255,255,.16);
+    }
+    .auth-forms { display: grid; gap: 16px; }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 13px 14px;
+      margin-top: 8px;
+      border-radius: 16px;
+      border: 1px solid rgba(50, 28, 60, .12);
+      background: rgba(255,255,255,.92);
+      color: var(--text);
+      font: inherit;
+      outline: none;
+      transition: .18s ease;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: rgba(255,79,163,.52);
+      box-shadow: 0 0 0 5px rgba(255,79,163,.12);
+    }
+    label { display: block; margin-top: 13px; font-weight: 700; color: #46314f; font-size: 14px; }
+
+    button, .btn {
+      border: 0;
+      border-radius: 16px;
+      padding: 12px 16px;
+      margin-top: 10px;
+      background: linear-gradient(135deg, var(--dark), #3c2444);
+      color: white;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+      box-shadow: 0 10px 24px rgba(32,18,38,.18);
+    }
+    button:hover, .btn:hover { transform: translateY(-1px); box-shadow: 0 14px 30px rgba(32,18,38,.22); }
+    button:active, .btn:active { transform: translateY(0); }
+    button.secondary { background: linear-gradient(135deg, #6f5f7a, #8c7a97); }
+    button.danger { background: linear-gradient(135deg, #e63956, #ff6a88); }
+    button.success { background: linear-gradient(135deg, #0c8f62, #14bd85); }
+
+    .menu {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 0 0 20px;
+      position: sticky;
+      top: 82px;
+      z-index: 40;
+      padding: 10px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.66);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,.72);
+      box-shadow: var(--shadow-soft);
+    }
+    .menu button {
+      width: auto;
+      margin: 0;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.82);
+      color: #4b334f;
+      border: 1px solid rgba(60, 36, 68, .08);
+      box-shadow: none;
+      font-size: 14px;
+    }
+    .menu button:hover { background: #fff; box-shadow: 0 10px 22px rgba(255,79,163,.13); }
+    #adminBtn { background: linear-gradient(135deg, rgba(255,79,163,.15), rgba(123,76,255,.12)); color: #9e1f68; }
+    .menu .danger { background: linear-gradient(135deg, #2f1836, #dd3d78); color: #fff; margin-left: auto; }
+
+    .dashboard-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; }
+    .stat-card {
+      background: rgba(255,255,255,.78);
+      border: 1px solid rgba(255,255,255,.82);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 10px 26px rgba(90,45,90,.08);
+    }
+    .stat-label { color: var(--muted); font-size: 13px; }
+    .stat-value { font-weight: 900; font-size: 22px; margin-top: 6px; overflow-wrap: anywhere; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(245px, 1fr)); gap: 16px; }
+    .product {
+      position: relative;
+      overflow: hidden;
+      background: rgba(255,255,255,.86);
+      border: 1px solid rgba(65,37,73,.10);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 14px 35px rgba(100, 44, 90, .09);
+      transition: transform .16s ease, box-shadow .16s ease;
+    }
+    .product:hover { transform: translateY(-2px); box-shadow: 0 18px 46px rgba(100,44,90,.14); }
+    .product h3 { font-size: 18px; line-height: 1.35; margin-bottom: 8px; }
+    .product p { margin: 8px 0; line-height: 1.55; }
+    .price { color: var(--pink); font-weight: 900; font-size: 24px; }
+    .product button { width: 100%; }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 12px;
+      background: rgba(123,76,255,.10);
+      color: #5630b8;
+    }
+    .notice {
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255, 209, 102, .20);
+      border: 1px solid rgba(255, 209, 102, .38);
+      color: #6d4b00;
+      line-height: 1.7;
+    }
+    .admin-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; align-items: start; }
+    .admin-section {
+      background: rgba(255,255,255,.60);
+      border: 1px solid rgba(255,255,255,.80);
+      border-radius: 22px;
+      padding: 18px;
+    }
+    .admin-section.full { grid-column: 1 / -1; }
+    .admin-section h3 { margin-bottom: 10px; font-size: 19px; }
+    .admin-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 4px 0 18px;
+      padding: 10px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.58);
+      border: 1px solid rgba(255,255,255,.82);
+    }
+    .admin-tabs button {
+      width: auto;
+      margin: 0;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.86);
+      color: #4b334f;
+      border: 1px solid rgba(60, 36, 68, .08);
+      box-shadow: none;
+      font-size: 14px;
+    }
+    .admin-tabs button.active {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: #fff;
+      box-shadow: 0 12px 28px rgba(123,76,255,.18);
+    }
+    .admin-panel { animation: fadeIn .16s ease; }
+    @keyframes fadeIn { from { opacity: .35; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+
+    .admin-search-box {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: end;
+      margin: 14px 0 16px;
+      padding: 12px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.68);
+      border: 1px solid rgba(255,255,255,.82);
+    }
+    .admin-search-box label { margin-top: 0; }
+    .admin-search-box input { margin-top: 6px; }
+    .admin-search-box button {
+      width: auto;
+      min-width: 120px;
+      margin-top: 0;
+      white-space: nowrap;
+      background: rgba(123,76,255,.12);
+      color: #5630b8;
+      box-shadow: none;
+      border: 1px solid rgba(123,76,255,.18);
+    }
+    .search-hint {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 6px;
+      line-height: 1.55;
+    }
+    @media (max-width: 620px) {
+      .admin-search-box { grid-template-columns: 1fr; }
+      .admin-search-box button { width: 100%; }
+    }
+
+    .detail-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0 8px;
+    }
+    .detail-head p { margin: 0; }
+    .copy-btn {
+      width: auto !important;
+      margin: 0 !important;
+      padding: 8px 12px !important;
+      border-radius: 999px !important;
+      background: rgba(123,76,255,.10) !important;
+      color: #5630b8 !important;
+      border: 1px solid rgba(123,76,255,.18) !important;
+      box-shadow: none !important;
+      font-size: 13px !important;
+    }
+
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #24152a;
+      color: #fff0fa;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.08);
+      line-height: 1.55;
+    }
+    hr { border: 0; height: 1px; background: var(--line); margin: 18px 0; }
+
+    .footer-note { color: var(--muted); text-align: center; font-size: 12px; margin-top: 26px; }
+
+    /* Smooth UX effects */
+    .app-ambient {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+    .app-ambient span {
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 999px;
+      filter: blur(12px);
+      opacity: .26;
+      animation: floatBlob 9s ease-in-out infinite;
+    }
+    .app-ambient span:nth-child(1) { left: -55px; top: 18%; background: #ff4fa3; }
+    .app-ambient span:nth-child(2) { right: -45px; top: 32%; background: #7b4cff; animation-delay: -3s; }
+    .app-ambient span:nth-child(3) { left: 38%; bottom: -70px; background: #ffd166; animation-delay: -5s; }
+    @keyframes floatBlob {
+      0%, 100% { transform: translate3d(0,0,0) scale(1); }
+      50% { transform: translate3d(18px,-18px,0) scale(1.08); }
+    }
+
+    .brand-logo { animation: catPulse 2.8s ease-in-out infinite; }
+    @keyframes catPulse {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-2px) rotate(-2deg); }
+    }
+
+    .page-card:not(.hidden), .card, .hero, .auth-hero {
+      animation: riseIn .28s ease both;
+    }
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    button, .btn, .copy-btn {
+      position: relative;
+      overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    button:active, .btn:active, .copy-btn:active {
+      transform: translateY(1px) scale(.985) !important;
+      filter: brightness(.98);
+    }
+    .ripple-effect {
+      position: absolute;
+      border-radius: 999px;
+      transform: scale(0);
+      animation: ripple .55s ease-out;
+      background: rgba(255,255,255,.55);
+      pointer-events: none;
+      width: 18px;
+      height: 18px;
+      margin-left: -9px;
+      margin-top: -9px;
+    }
+    .menu button .ripple-effect, .copy-btn .ripple-effect {
+      background: rgba(255,79,163,.22);
+    }
+    @keyframes ripple {
+      to { transform: scale(18); opacity: 0; }
+    }
+
+    .product::after, .stat-card::after, .admin-section::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,.46), transparent);
+      transform: translateX(-120%);
+      transition: transform .55s ease;
+      pointer-events: none;
+    }
+    .product:hover::after, .stat-card:hover::after, .admin-section:hover::after {
+      transform: translateX(120%);
+    }
+    .stat-card, .admin-section { position: relative; overflow: hidden; }
+
+    .toast-root {
+      position: fixed;
+      top: 88px;
+      right: 18px;
+      z-index: 9999;
+      display: grid;
+      gap: 10px;
+      max-width: min(360px, calc(100vw - 28px));
+    }
+    .toast-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 13px 14px;
+      border-radius: 18px;
+      color: #2a1731;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(255,255,255,.78);
+      box-shadow: 0 18px 45px rgba(79,38,80,.18);
+      backdrop-filter: blur(16px);
+      animation: toastIn .25s ease both;
+      line-height: 1.55;
+      font-size: 14px;
+    }
+    .toast-item.success { border-color: rgba(22,163,109,.28); }
+    .toast-item.error { border-color: rgba(230,57,86,.28); }
+    .toast-icon { font-size: 18px; line-height: 1.35; }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(18px) scale(.98); }
+      to { opacity: 1; transform: translateX(0) scale(1); }
+    }
+    @keyframes toastOut {
+      to { opacity: 0; transform: translateX(18px) scale(.98); }
+    }
+
+    .soft-loading {
+      opacity: .74;
+      pointer-events: none;
+    }
+
+
+    .dialog-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(24, 12, 30, .42);
+      backdrop-filter: blur(10px);
+    }
+    .dialog-overlay.active { display: flex; }
+    .dialog-card {
+      width: min(440px, 100%);
+      border-radius: 28px;
+      padding: 22px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.96), rgba(255,246,252,.92));
+      border: 1px solid rgba(255,255,255,.84);
+      box-shadow: 0 28px 90px rgba(63, 30, 70, .28);
+      animation: dialogIn .18s ease both;
+    }
+    .dialog-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, rgba(255,79,163,.16), rgba(123,76,255,.14));
+      font-size: 22px;
+    }
+    .dialog-title { font-size: 22px; font-weight: 900; margin: 0 0 6px; }
+    .dialog-message { color: var(--muted); line-height: 1.75; margin: 0 0 14px; white-space: pre-wrap; }
+    .dialog-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+    .dialog-actions button { width: auto; min-width: 110px; }
+    .dialog-actions .ghost {
+      background: rgba(123,76,255,.12);
+      color: #5630b8;
+      box-shadow: none;
+    }
+    .dialog-input {
+      margin-top: 10px;
+    }
+    @keyframes dialogIn {
+      from { opacity: 0; transform: translateY(10px) scale(.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+
+    @media (max-width: 860px) {
+      .hero-grid, .auth-shell, .admin-grid { grid-template-columns: 1fr; }
+      .dashboard-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .topbar-inner { align-items: flex-start; }
+      .user-pill { max-width: 150px; }
+      .menu { top: 72px; overflow-x: auto; flex-wrap: nowrap; justify-content: flex-start; }
+      .menu button { flex: 0 0 auto; }
+      .menu .danger { margin-left: 0; }
+    }
+    @media (max-width: 520px) {
+      .container { padding: 18px 12px 44px; }
+      .topbar-inner { padding: 12px; }
+      .brand-logo { width: 42px; height: 42px; border-radius: 14px; }
+      .brand-subtitle { display: none; }
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .hero, .card, .page-card { border-radius: 22px; }
+      button { padding: 12px 13px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-ambient"><span></span><span></span><span></span></div>
+  <div id="toastRoot" class="toast-root"></div>
+  <div id="dialogRoot" class="dialog-overlay" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-wrap">
+        <div class="brand-logo">🐱</div>
+        <div>
+          <div class="brand-title">Premium app, Purple Cat.</div>
+          <div class="brand-subtitle">Premium App • Purple Cat Agent</div>
+        </div>
+      </div>
+      <div id="userBox" class="user-pill">ยังไม่ได้เข้าสู่ระบบ</div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="authSection" class="auth-shell">
+      <div class="auth-hero">
+        <div>
+          <div class="eyebrow">✨ เว็บตัวแทนพร้อมใช้งาน</div>
+          <h1>สั่งง่าย<br>เครดิตไว<br>ดูประวัติครบ</h1>
+          <p>เว็บสำหรับตัวแทนของร้าน Premium app, Purple Cat. เติมเครดิตเองได้ เช็กสลิปไว กดซื้อแล้วดูประวัติได้เลย ไม่ต้องรอทักแอดมินทุกครั้ง</p>
+        </div>
+        <div class="auth-list">
+          <div>✅ ตรวจสลิปอัตโนมัติ</div>
+          <div>✅ กดซื้อแล้วหักเครดิตทันที</div>
+          <div>✅ มีประวัติซื้อและประวัติเครดิต</div>
+        </div>
+      </div>
+
+      <div class="auth-forms">
+        <div class="card">
+          <div class="section-head">
+            <div>
+              <div class="section-title"><span class="section-icon">🔐</span><h2>เข้าสู่ระบบ</h2></div>
+              <p>เข้าสู่ระบบเพื่อเช็กเครดิต เลือกสินค้า และดูรายการย้อนหลังของบัญชีคุณ</p>
+            </div>
+          </div>
+          <label>อีเมล</label>
+          <input id="loginEmail" type="email" placeholder="example@gmail.com" autocomplete="email" />
+          <label>รหัสผ่าน</label>
+          <input id="loginPassword" type="password" placeholder="กรอกรหัสผ่าน" autocomplete="current-password" />
+          <button onclick="login()">เข้าสู่ระบบ</button>
+        </div>
+
+        <div class="card">
+          <div class="section-head">
+            <div>
+              <div class="section-title"><span class="section-icon">🧁</span><h2>สมัครสมาชิกตัวแทน</h2></div>
+              <p>สมัครเสร็จแล้วรอแอดมินเปิดใช้งานก่อน เพื่อให้ระบบปลอดภัยกับตัวแทนทุกคน</p>
+            </div>
+          </div>
+          <label>ชื่อผู้ใช้</label>
+          <input id="regUsername" placeholder="เช่น harjelly01" autocomplete="username" />
+          <label>อีเมล</label>
+          <input id="regEmail" type="email" placeholder="example@gmail.com" autocomplete="email" />
+          <label>รหัสผ่าน</label>
+          <input id="regPassword" type="password" placeholder="อย่างน้อย 6 ตัวอักษร" autocomplete="new-password" />
+          <button class="secondary" onclick="register()">สมัครสมาชิก</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="appSection" class="hidden">
+      <section class="hero">
+        <div class="hero-grid">
+          <div>
+            <div class="eyebrow">🚀 Agent Dashboard</div>
+            <h1>จัดการออเดอร์<br>แบบมือโปร</h1>
+            <p>รวมเมนูที่ต้องใช้บ่อยไว้ให้ครบ เติมเงิน เช็กสินค้า กดซื้อ และดูประวัติได้เองจากหน้านี้</p>
+            <div class="hero-actions">
+              <button onclick="showPage('products')">🛒 เลือกสินค้า</button>
+              <button class="secondary" onclick="showPage('topup')">💳 เติมเครดิต</button>
+            </div>
+          </div>
+          <div class="hero-card">
+            <div class="stat-label">เครดิตคงเหลือ</div>
+            <div class="credit-big"><span id="myCredit">0</span></div>
+            <p class="muted">พอยต์พร้อมใช้สำหรับกดซื้อสินค้า</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="menu">
+        <button onclick="showPage('home')">🏠 หน้าหลัก</button>
+        <button onclick="showPage('products')">🛍️ สินค้า</button>
+        <button onclick="showPage('topup')">💳 เติมเงิน</button>
+        <button onclick="showPage('history')">📦 ประวัติซื้อ</button>
+        <button onclick="showPage('creditHistory')">📊 ประวัติเครดิต</button>
+        <button id="adminBtn" class="hidden" onclick="showPage('admin')">⚙️ หลังบ้าน</button>
+        <button onclick="logout()" class="danger">ออกจากระบบ</button>
+      </div>
+
+      <div id="homePage" class="page-card">
+        <div class="section-head">
+          <div>
+            <div class="section-title"><span class="section-icon">👤</span><h2>บัญชีของฉัน</h2></div>
+            <p>สรุปข้อมูลบัญชีและเครดิตพร้อมใช้ของคุณ</p>
+          </div>
+        </div>
+        <div class="dashboard-grid">
+          <div class="stat-card"><div class="stat-label">ชื่อผู้ใช้</div><div class="stat-value" id="myUsername">-</div></div>
+          <div class="stat-card"><div class="stat-label">สถานะบัญชี</div><div class="stat-value" id="myStatus">-</div></div>
+          <div class="stat-card"><div class="stat-label">ระดับสมาชิก</div><div class="stat-value" id="myRole">-</div></div>
+          <div class="stat-card"><div class="stat-label">ระบบ</div><div class="stat-value">พร้อมใช้</div></div>
+        </div>
+        <hr>
+        <div class="notice">💡 วิธีใช้งานง่าย ๆ: เติมเครดิตด้วยสลิป → รอระบบตรวจ → เครดิตเข้า → เลือกสินค้า → กดซื้อ → ดูรายละเอียดในประวัติการซื้อ</div>
+      </div>
+
+      <div id="productsPage" class="page-card hidden">
+        <div class="section-head">
+          <div>
+            <div class="section-title"><span class="section-icon">🛍️</span><h2>สินค้าทั้งหมด</h2></div>
+            <p>เลือกแพ็กเกจที่ต้องการ กดซื้อแล้วระบบจะหักเครดิตและส่งรายละเอียดให้ทันที</p>
+          </div>
+        </div>
+        <div id="productsGrid" class="grid"></div>
+      </div>
+
+      <div id="topupPage" class="page-card hidden">
+        <div class="section-head">
+          <div>
+            <div class="section-title"><span class="section-icon">💳</span><h2>เติมเครดิต</h2></div>
+            <p>โอนตามยอดที่ต้องการ แล้วอัปโหลดสลิป ระบบจะตรวจให้ทันที ถ้าข้อมูลตรงเครดิตจะเข้าเอง</p>
+          </div>
+        </div>
+        <div class="notice">⚠️ ใส่ยอดให้ตรงกับสลิป และเลือกรูปที่เห็น QR ชัด ๆ ระบบจะตรวจได้ไวกว่า</div>
+        <label>จำนวนเงินที่โอน</label>
+        <input id="topupAmount" type="number" placeholder="เช่น 100" inputmode="decimal" />
+        <label>แนบรูปสลิป</label>
+        <input id="topupSlip" type="file" accept="image/*" />
+        <button onclick="submitTopup()">แจ้งเติมเงิน / ตรวจสลิป</button>
+        <hr>
+        <h3>ประวัติเติมเงินของฉัน</h3>
+        <div id="myTopupsList"></div>
+      </div>
+
+      <div id="historyPage" class="page-card hidden">
+        <div class="section-head">
+          <div>
+            <div class="section-title"><span class="section-icon">📦</span><h2>ประวัติการซื้อ</h2></div>
+            <p>รวมรายการที่เคยกดซื้อ พร้อมรายละเอียดที่ได้รับและปุ่มคัดลอก</p>
+          </div>
+        </div>
+        <div id="ordersList"></div>
+      </div>
+
+      <div id="creditHistoryPage" class="page-card hidden">
+        <div class="section-head">
+          <div>
+            <div class="section-title"><span class="section-icon">📊</span><h2>ประวัติเครดิต</h2></div>
+            <p>เช็กยอดเข้าออกของเครดิต ทั้งเติมเงิน ซื้อสินค้า คืนเครดิต และการปรับยอดจากแอดมิน</p>
+          </div>
+        </div>
+        <div id="creditLogsList"></div>
+      </div>
+
+      <div id="adminPage" class="page-card hidden">
+        <div class="section-head">
+          <div>
+            <div class="section-title"><span class="section-icon">⚙️</span><h2>หลังบ้านแอดมิน</h2></div>
+            <p>หลังบ้านสำหรับดูงานประจำวัน แยกออเดอร์ สมาชิก รายการเติมเงิน สินค้า และสต๊อกไว้เป็นหมวดชัดเจน</p>
+          </div>
+        </div>
+        <div class="admin-tabs">
+          <button id="adminTabOrders" class="active" onclick="switchAdminTab('orders')">📦 ออเดอร์</button>
+          <button id="adminTabMembers" onclick="switchAdminTab('members')">👥 สมาชิก</button>
+          <button id="adminTabTopups" onclick="switchAdminTab('topups')">🧾 เติมเงิน</button>
+          <button id="adminTabProducts" onclick="switchAdminTab('products')">➕ เพิ่มสินค้า</button>
+          <button id="adminTabStock" onclick="switchAdminTab('stock')">📥 สต๊อก</button>
+        </div>
+
+        <div id="adminPanelOrders" class="admin-panel">
+          <div class="admin-section full">
+            <h3>📦 ออเดอร์ทั้งหมด</h3>
+            <p class="muted">ดูรายการซื้อของตัวแทน แยกออกจากหน้าสมาชิกเพื่อให้เช็กงานง่ายขึ้น</p>
+            <div class="admin-search-box">
+              <div>
+                <label for="adminOrderSearch">ค้นหาออเดอร์</label>
+                <input id="adminOrderSearch" type="search" placeholder="ค้นหาจากชื่อตัวแทน สินค้า สถานะ ราคา หรือรายละเอียดสินค้า" oninput="filterAdminOrders()" />
+                <div class="search-hint">พิมพ์คำที่ต้องการค้นหา เช่น agent01, Netflix, success, 35 หรือบางส่วนของเมล/รายละเอียดที่ส่งให้ตัวแทน</div>
+              </div>
+              <button type="button" onclick="clearAdminOrderSearch()">ล้างค้นหา</button>
+            </div>
+            <div id="adminOrdersList"></div>
+          </div>
+        </div>
+
+        <div id="adminPanelMembers" class="admin-panel hidden">
+          <div class="admin-section full">
+            <h3>👥 จัดการสมาชิกตัวแทน</h3>
+            <p class="muted">อนุมัติ ระงับ เปลี่ยนระดับ หรือปรับเครดิตให้ตัวแทนจากหน้านี้</p>
+            <div id="adminMembersList"></div>
+          </div>
+        </div>
+
+        <div id="adminPanelTopups" class="admin-panel hidden">
+          <div class="admin-section full">
+            <h3>🧾 รายการเติมเงินรอตรวจ</h3>
+            <p class="muted">รายการที่ระบบยังไม่อนุมัติอัตโนมัติ แอดมินสามารถเปิดดูสลิปและจัดการเองได้</p>
+            <div id="adminTopupsList"></div>
+          </div>
+        </div>
+
+        <div id="adminPanelProducts" class="admin-panel hidden">
+          <div class="admin-section full">
+            <h3>➕ เพิ่มสินค้าใหม่</h3>
+            <label>หมวดสินค้า</label>
+            <select id="newProductCategory"></select>
+            <label>ชื่อสินค้า</label>
+            <input id="newProductName" placeholder="เช่น NETFLIX 30 วัน" />
+            <label>รายละเอียดสินค้า</label>
+            <textarea id="newProductDesc" rows="3" placeholder="เช่น Netflix 30 วัน สำหรับตัวแทน"></textarea>
+            <label>ราคา / พอยต์</label>
+            <input id="newProductPrice" type="number" placeholder="เช่น 150" />
+            <label>ประเภทสินค้า</label>
+            <select id="newProductType">
+              <option value="stock">ส่งสต๊อกอัตโนมัติ</option>
+              <option value="manual">รอแอดมินทำรายการ</option>
+            </select>
+            <button onclick="adminAddProduct()">เพิ่มสินค้า</button>
+          </div>
+        </div>
+
+        <div id="adminPanelStock" class="admin-panel hidden">
+          <div class="admin-section full">
+            <h3>📥 เติมสต๊อกสินค้า</h3>
+            <p class="muted">ใส่สต๊อก 1 บรรทัด = 1 ชิ้น ระบบจะจ่ายตามลำดับที่เติมเข้าไปก่อน</p>
+            <label>เลือกสินค้า</label>
+            <select id="stockProduct"></select>
+            <label>ข้อมูลสต๊อก</label>
+            <textarea id="stockData" rows="7" placeholder="ตัวอย่าง:
+email1@gmail.com / pass123 / โปรไฟล์ 1 / PIN 1111 / หมด 12-12
+email2@gmail.com / pass456 / โปรไฟล์ 2 / PIN 2222 / หมด 12-12"></textarea>
+            <button onclick="adminAddStock()">เพิ่มสต๊อก</button>
+            <div id="adminResult" style="margin-top:15px;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="footer-note">Premium app, Purple Cat. • Agent system</div>
+  </main>
+
+<script>
+  const SUPABASE_URL = "https://onywdfmgocporqryzpbf.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ueXdkZm1nb2Nwb3Jxcnl6cGJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExNzM1NDQsImV4cCI6MjA5Njc0OTU0NH0.9AOrfgI9rKmsGrhwDbYIyn3_Irin26naCb7erDZkjsQ";
+
+  const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let currentUser = null;
+  let currentProfile = null;
+  let adminOrdersCache = [];
+
+  function showToast(message, type = "success", duration = 2600) {
+    const root = document.getElementById("toastRoot");
+    if (!root) {
+      alert(message);
+      return;
+    }
+
+    const toast = document.createElement("div");
+    toast.className = `toast-item ${type}`;
+    toast.innerHTML = `
+      <div class="toast-icon">${type === "error" ? "⚠️" : "✨"}</div>
+      <div>${escapeHTML(message)}</div>
+    `;
+    root.appendChild(toast);
+
+    setTimeout(() => {
+      toast.style.animation = "toastOut .22s ease forwards";
+      setTimeout(() => toast.remove(), 230);
+    }, duration);
+  }
+
+
+
+  function openDialog({ title = "แจ้งเตือน", message = "", mode = "confirm", placeholder = "", defaultValue = "" }) {
+    return new Promise((resolve) => {
+      const root = document.getElementById("dialogRoot");
+      if (!root) {
+        resolve(mode === "prompt" ? window.prompt(message, defaultValue) : window.confirm(message));
+        return;
+      }
+
+      root.classList.add("active");
+      root.setAttribute("aria-hidden", "false");
+      root.innerHTML = `
+        <div class="dialog-card" role="dialog" aria-modal="true">
+          <div class="dialog-badge">${mode === "prompt" ? "✍️" : "🐱"}</div>
+          <h3 class="dialog-title">${escapeHTML(title)}</h3>
+          <p class="dialog-message">${escapeHTML(message)}</p>
+          ${mode === "prompt" ? `<input id="dialogInput" class="dialog-input" placeholder="${escapeHTML(placeholder)}" value="${escapeHTML(defaultValue)}" />` : ""}
+          <div class="dialog-actions">
+            <button type="button" class="ghost" id="dialogCancel">ยกเลิก</button>
+            <button type="button" id="dialogOk">ตกลง</button>
+          </div>
+        </div>
+      `;
+
+      const close = (value) => {
+        root.classList.remove("active");
+        root.setAttribute("aria-hidden", "true");
+        root.innerHTML = "";
+        resolve(value);
+      };
+
+      const okBtn = root.querySelector("#dialogOk");
+      const cancelBtn = root.querySelector("#dialogCancel");
+      const input = root.querySelector("#dialogInput");
+
+      if (input) {
+        setTimeout(() => input.focus(), 30);
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") close(input.value);
+          if (e.key === "Escape") close(null);
+        });
+      }
+
+      okBtn.addEventListener("click", () => close(mode === "prompt" ? (input?.value ?? "") : true));
+      cancelBtn.addEventListener("click", () => close(mode === "prompt" ? null : false));
+      root.addEventListener("click", (e) => {
+        if (e.target === root) close(mode === "prompt" ? null : false);
+      }, { once: true });
+    });
+  }
+
+  function uiConfirm(message, title = "ยืนยันรายการ") {
+    return openDialog({ title, message, mode: "confirm" });
+  }
+
+  function uiPrompt(message, defaultValue = "", title = "กรอกข้อมูล", placeholder = "") {
+    return openDialog({ title, message, mode: "prompt", defaultValue, placeholder });
+  }
+
+
+  document.addEventListener("click", (event) => {
+    const target = event.target.closest("button, .btn, .copy-btn");
+    if (!target || target.disabled) return;
+
+    const rect = target.getBoundingClientRect();
+    const ripple = document.createElement("span");
+    ripple.className = "ripple-effect";
+    ripple.style.left = `${event.clientX - rect.left}px`;
+    ripple.style.top = `${event.clientY - rect.top}px`;
+    target.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+  });
+
+
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    }[char]));
+  }
+
+  async function copyFromElement(elementId) {
+    const el = document.getElementById(elementId);
+    const text = el ? el.innerText.trim() : "";
+    if (!text || text === "-") {
+      showToast("ยังไม่มีรายละเอียดให้คัดลอก", "error");
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast("คัดลอกข้อมูลแล้ว");
+    } catch (err) {
+      const temp = document.createElement("textarea");
+      temp.value = text;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand("copy");
+      temp.remove();
+      showToast("คัดลอกข้อมูลแล้ว");
+    }
+  }
+
+  function switchAdminTab(tab) {
+    const tabs = ["orders", "members", "topups", "products", "stock"];
+    tabs.forEach((name) => {
+      const panel = document.getElementById(`adminPanel${name.charAt(0).toUpperCase() + name.slice(1)}`);
+      const button = document.getElementById(`adminTab${name.charAt(0).toUpperCase() + name.slice(1)}`);
+      if (panel) panel.classList.toggle("hidden", name !== tab);
+      if (button) button.classList.toggle("active", name === tab);
+    });
+  }
+
+  async function init() {
+    const { data } = await client.auth.getSession();
+    if (data.session) {
+      currentUser = data.session.user;
+      await loadApp();
+    }
+  }
+
+  async function register() {
+    const username = document.getElementById("regUsername").value.trim();
+    const email = document.getElementById("regEmail").value.trim();
+    const password = document.getElementById("regPassword").value;
+
+    if (!username || !email || !password) {
+      showToast("กรอกข้อมูลให้ครบ", "error");
+      return;
+    }
+
+    const { error } = await client.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          username: username,
+          display_name: username
+        }
+      }
+    });
+
+    if (error) {
+      showToast(error.message, "error");
+      return;
+    }
+
+    showToast("สมัครสำเร็จ กำลังรีเฟรชหน้าเว็บให้ใหม่ 1 ครั้ง");
+    setTimeout(() => location.reload(), 900);
+  }
+
+  async function login() {
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+
+    const { data, error } = await client.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      showToast(error.message, "error");
+      return;
+    }
+
+    currentUser = data.user;
+    await loadApp();
+  }
+
+  async function logout() {
+    await client.auth.signOut();
+    location.reload();
+  }
+
+async function loadApp() {
+  document.getElementById("authSection").classList.add("hidden");
+  document.getElementById("appSection").classList.remove("hidden");
+
+  await loadProfile();
+
+  if (currentProfile.role === "admin") {
+    document.getElementById("adminBtn").classList.remove("hidden");
+    await loadAdminCategories();
+await loadAdminProducts();
+await loadAdminTopups();
+await loadAdminMembers();
+await loadAdminOrders();
+  }
+
+  await loadProducts();
+  await loadOrders();
+  await loadMyTopups();
+  await loadCreditLogs();
+}
+
+  async function loadProfile() {
+    const { data, error } = await client
+      .from("profiles")
+      .select("*")
+      .eq("id", currentUser.id)
+      .single();
+
+    if (error) {
+      showToast("โหลดโปรไฟล์ไม่สำเร็จ: " + error.message, "error");
+      return;
+    }
+
+    currentProfile = data;
+
+    document.getElementById("userBox").innerText = data.username;
+    document.getElementById("myUsername").innerText = data.username;
+    document.getElementById("myStatus").innerText = data.status;
+    document.getElementById("myRole").innerText = data.role;
+    document.getElementById("myCredit").innerText = Number(data.credit).toFixed(2);
+  }
+
+  function showPage(page) {
+  document.getElementById("homePage").classList.add("hidden");
+  document.getElementById("productsPage").classList.add("hidden");
+  document.getElementById("historyPage").classList.add("hidden");
+  document.getElementById("topupPage").classList.add("hidden");
+  document.getElementById("adminPage").classList.add("hidden");
+  document.getElementById("creditHistoryPage").classList.add("hidden");
+
+  if (page === "home") document.getElementById("homePage").classList.remove("hidden");
+
+  if (page === "products") document.getElementById("productsPage").classList.remove("hidden");
+  if (page === "history") document.getElementById("historyPage").classList.remove("hidden");
+  if (page === "topup") {
+    document.getElementById("topupPage").classList.remove("hidden");
+    loadMyTopups();
+  }
+
+  if (page === "creditHistory") {
+  document.getElementById("creditHistoryPage").classList.remove("hidden");
+  loadCreditLogs();
+}
+
+
+
+  if (page === "admin") {
+   document.getElementById("adminPage").classList.remove("hidden");
+   switchAdminTab("orders");
+   loadAdminTopups();
+   loadAdminMembers();
+   loadAdminOrders();
+  }
+}
+
+  async function loadProducts() {
+    const { data, error } = await client.rpc("get_products");
+
+    if (error) {
+      document.getElementById("productsGrid").innerHTML = "<p>โหลดสินค้าไม่ได้: " + error.message + "</p>";
+      return;
+    }
+
+    const html = data.map(item => `
+      <div class="product">
+        <h3>${item.product_name}</h3>
+        <p class="muted">${item.category_name || ""}</p>
+        <p>${item.description || ""}</p>
+        <p class="price">${Number(item.price).toFixed(2)} พอยต์</p>
+        <p>เหลือในระบบ: <b>${item.stock_count}</b></p>
+        <button onclick="buyProduct('${item.product_id}')">
+          ${item.stock_count > 0 ? "กดซื้อ" : "สินค้าหมด"}
+        </button>
+      </div>
+    `).join("");
+
+    document.getElementById("productsGrid").innerHTML = html || "<p>ยังไม่มีสินค้า</p>";
+  }
+
+  async function buyProduct(productId) {
+    if (!(await uiConfirm("ยืนยันการซื้อสินค้านี้?", "ยืนยันการซื้อ"))) return;
+
+    const { data, error } = await client.rpc("buy_product", {
+      p_product_id: productId
+    });
+
+    if (error) {
+      showToast(error.message, "error");
+      return;
+    }
+
+    showToast("ซื้อสำเร็จ");
+    await loadProfile();
+    await loadProducts();
+    await loadOrders();
+
+    showPage("history");
+  }
+
+  async function loadOrders() {
+    const { data, error } = await client
+      .from("orders")
+      .select("id, price, status, result_data, created_at, products(name)")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      document.getElementById("ordersList").innerHTML = "<p>โหลดประวัติไม่ได้: " + error.message + "</p>";
+      return;
+    }
+
+    const html = data.map(order => {
+      const detailId = `order-detail-${order.id}`;
+      const resultText = order.result_data || "-";
+      return `
+        <div class="product">
+          <p><b>สินค้า:</b> ${escapeHTML(order.products?.name || "-")}</p>
+          <p><b>ราคา:</b> ${Number(order.price).toFixed(2)} พอยต์</p>
+          <p><b>สถานะ:</b> ${escapeHTML(order.status)}</p>
+          <p><b>เวลา:</b> ${new Date(order.created_at).toLocaleString("th-TH")}</p>
+          <div class="detail-head">
+            <p><b>รายละเอียดที่ได้รับ:</b></p>
+            <button class="copy-btn" onclick="copyFromElement('${detailId}')">คัดลอก</button>
+          </div>
+          <pre id="${detailId}">${escapeHTML(resultText)}</pre>
+        </div>
+      `;
+    }).join("");
+
+    document.getElementById("ordersList").innerHTML = html || "<p>ยังไม่มีประวัติการซื้อ</p>";
+  }
+
+  async function loadAdminProducts() {
+  if (currentProfile.role !== "admin") return;
+
+  const { data, error } = await client
+    .from("products")
+    .select("id, name, price")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    showToast("โหลดสินค้าแอดมินไม่ได้: " + error.message, "error");
+    return;
+  }
+
+  const options = data.map(p => `
+    <option value="${p.id}">
+      ${p.name} - ${Number(p.price).toFixed(2)} พอยต์
+    </option>
+  `).join("");
+
+  document.getElementById("stockProduct").innerHTML = options;
+}
+
+async function adminAddStock() {
+  if (currentProfile.role !== "admin") {
+    showToast("เฉพาะแอดมินเท่านั้น", "error");
+    return;
+  }
+
+  const productId = document.getElementById("stockProduct").value;
+  const stockText = document.getElementById("stockData").value.trim();
+
+  if (!productId || !stockText) {
+    showToast("เลือกสินค้าและกรอกข้อมูลสต๊อกก่อน", "error");
+    return;
+  }
+
+  const rows = stockText
+    .split("\n")
+    .map(x => x.trim())
+    .filter(x => x.length > 0);
+
+  const payload = rows.map(row => ({
+    product_id: productId,
+    stock_data: row,
+    status: "available"
+  }));
+
+  const { error } = await client
+    .from("stock_items")
+    .insert(payload);
+
+  if (error) {
+    showToast("เพิ่มสต๊อกไม่สำเร็จ: " + error.message, "error");
+    return;
+  }
+
+  document.getElementById("adminResult").innerHTML = `
+    <p style="color:green;"><b>เพิ่มสต๊อกสำเร็จ ${rows.length} ชิ้น</b></p>
+  `;
+
+  document.getElementById("stockData").value = "";
+
+  await loadProducts();
+}
+
+async function loadAdminCategories() {
+  if (currentProfile.role !== "admin") return;
+
+  const { data, error } = await client
+    .from("categories")
+    .select("id, name")
+    .order("sort_order", { ascending: true });
+
+  if (error) {
+    showToast("โหลดหมวดสินค้าไม่ได้: " + error.message, "error");
+    return;
+  }
+
+  const options = data.map(c => `
+    <option value="${c.id}">${c.name}</option>
+  `).join("");
+
+  document.getElementById("newProductCategory").innerHTML = options;
+}
+
+async function adminAddProduct() {
+  if (currentProfile.role !== "admin") {
+    showToast("เฉพาะแอดมินเท่านั้น", "error");
+    return;
+  }
+
+  const categoryId = document.getElementById("newProductCategory").value;
+  const name = document.getElementById("newProductName").value.trim();
+  const description = document.getElementById("newProductDesc").value.trim();
+  const price = Number(document.getElementById("newProductPrice").value);
+  const productType = document.getElementById("newProductType").value;
+
+  if (!categoryId || !name || !price) {
+    showToast("กรอกหมวดสินค้า ชื่อสินค้า และราคาให้ครบ", "error");
+    return;
+  }
+
+  const { error } = await client
+    .from("products")
+    .insert({
+      category_id: categoryId,
+      name: name,
+      description: description,
+      image_url: "",
+      price: price,
+      product_type: productType,
+      is_active: true
+    });
+
+  if (error) {
+    showToast("เพิ่มสินค้าไม่สำเร็จ: " + error.message, "error");
+    return;
+  }
+
+  showToast("เพิ่มสินค้าสำเร็จ");
+
+  document.getElementById("newProductName").value = "";
+  document.getElementById("newProductDesc").value = "";
+  document.getElementById("newProductPrice").value = "";
+
+  await loadAdminProducts();
+  await loadProducts();
+}
+
+function readQrFromImageFile(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        ctx.drawImage(img, 0, 0);
+
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+        const qr = jsQR(
+          imageData.data,
+          imageData.width,
+          imageData.height
+        );
+
+        if (!qr || !qr.data) {
+          reject(new Error("อ่าน QR Code จากสลิปไม่ได้ กรุณาใช้รูปที่ชัดกว่านี้"));
+          return;
+        }
+
+        resolve(qr.data);
+      };
+
+      img.onerror = () => reject(new Error("โหลดรูปสลิปไม่สำเร็จ"));
+      img.src = reader.result;
+    };
+
+    reader.onerror = () => reject(new Error("อ่านไฟล์สลิปไม่สำเร็จ"));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function submitTopup() {
+  const amount = Number(document.getElementById("topupAmount").value);
+  const fileInput = document.getElementById("topupSlip");
+  const file = fileInput.files[0];
+
+  if (!amount || amount <= 0) {
+    showToast("กรอกจำนวนเงินให้ถูกต้อง", "error");
+    return;
+  }
+
+  if (!file) {
+    showToast("กรุณาแนบรูปสลิป", "error");
+    return;
+  }
+
+  let qrCode = "";
+
+  try {
+    qrCode = await readQrFromImageFile(file);
+  } catch (err) {
+    showToast(err.message + " ระบบจะส่งรายการให้แอดมินตรวจเอง", "error", 4200);
+  }
+
+  const cleanFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+  const filePath = `${currentUser.id}/${Date.now()}-${cleanFileName}`;
+
+  const { error: uploadError } = await client.storage
+    .from("slips")
+    .upload(filePath, file, {
+      cacheControl: "3600",
+      upsert: false
+    });
+
+  if (uploadError) {
+    showToast("อัปโหลดสลิปไม่สำเร็จ: " + uploadError.message, "error");
+    return;
+  }
+
+  const { data: topupData, error: insertError } = await client
+    .from("topups")
+    .insert({
+      user_id: currentUser.id,
+      amount: amount,
+      method: "slip",
+      slip_url: filePath,
+      status: "pending"
+    })
+    .select("id")
+    .single();
+
+  if (insertError) {
+    showToast("แจ้งเติมเงินไม่สำเร็จ: " + insertError.message, "error");
+    return;
+  }
+
+  if (qrCode) {
+    showToast("แจ้งเติมเงินสำเร็จ กำลังตรวจสลิปอัตโนมัติ...");
+
+    const { data: verifyData, error: verifyError } = await client.functions.invoke("verify-slip2go", {
+      body: {
+        topup_id: topupData.id,
+        qr_code: qrCode
+      }
+    });
+
+    if (verifyError) {
+      showToast("ตรวจสลิปอัตโนมัติไม่สำเร็จ รายการจะรอแอดมินตรวจ", "error", 4200);
+    } else if (verifyData?.ok) {
+      showToast("ตรวจสลิปผ่าน เครดิตเข้าแล้ว");
+    } else {
+      showToast(verifyData?.message || "ตรวจสลิปไม่ผ่าน", "error", 4200);
+    }
+  } else {
+    showToast("แจ้งเติมเงินสำเร็จ รอแอดมินตรวจ");
+  }
+
+  document.getElementById("topupAmount").value = "";
+  document.getElementById("topupSlip").value = "";
+
+  await loadProfile();
+  await loadMyTopups();
+
+  if (currentProfile.role === "admin") {
+    await loadAdminTopups();
+  }
+}
+
+async function loadMyTopups() {
+  const box = document.getElementById("myTopupsList");
+  if (!box) return;
+
+  const { data, error } = await client
+    .from("topups")
+    .select("id, amount, method, status, slip_status, note, created_at")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    box.innerHTML = "<p>โหลดประวัติเติมเงินไม่ได้: " + error.message + "</p>";
+    return;
+  }
+
+  const html = data.map(t => `
+    <div class="product">
+      <p><b>จำนวน:</b> ${Number(t.amount).toFixed(2)} บาท</p>
+      <p><b>ช่องทาง:</b> ${t.method}</p>
+      <p><b>สถานะ:</b> ${t.status}</p>
+      <p><b>ตรวจสลิป:</b> ${t.slip_status || "-"}</p>
+      <p><b>เวลา:</b> ${new Date(t.created_at).toLocaleString("th-TH")}</p>
+      <p><b>หมายเหตุ:</b> ${t.note || "-"}</p>
+    </div>
+  `).join("");
+
+  box.innerHTML = html || "<p>ยังไม่มีประวัติเติมเงิน</p>";
+}
+
+
+async function loadAdminTopups() {
+  if (currentProfile.role !== "admin") return;
+
+  const box = document.getElementById("adminTopupsList");
+  if (!box) return;
+
+  const { data, error } = await client
+    .from("topups")
+    .select("id, user_id, amount, method, slip_url, status, note, created_at, profiles(username)")
+    .eq("status", "pending")
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    box.innerHTML = "<p>โหลดรายการเติมเงินไม่ได้: " + error.message + "</p>";
+    return;
+  }
+
+  const rows = await Promise.all(data.map(async (t) => {
+    let slipLink = "-";
+
+    if (t.slip_url) {
+      const { data: signedData, error: signError } = await client.storage
+        .from("slips")
+        .createSignedUrl(t.slip_url, 60 * 10);
+
+      if (!signError && signedData?.signedUrl) {
+        slipLink = `<a href="${signedData.signedUrl}" target="_blank">เปิดดูสลิป</a>`;
+      }
+    }
+
+    return `
+      <div class="product">
+        <p><b>ตัวแทน:</b> ${t.profiles?.username || t.user_id}</p>
+        <p><b>จำนวน:</b> ${Number(t.amount).toFixed(2)} บาท</p>
+        <p><b>สลิป:</b> ${slipLink}</p>
+        <p><b>เวลา:</b> ${new Date(t.created_at).toLocaleString("th-TH")}</p>
+
+        <button onclick="approveTopup('${t.id}')">อนุมัติเติมเครดิต</button>
+        <button class="danger" onclick="rejectTopup('${t.id}')">ปฏิเสธ</button>
+      </div>
+    `;
+  }));
+
+  box.innerHTML = rows.join("") || "<p>ไม่มีรายการรอตรวจ</p>";
+}
+
+
+async function approveTopup(topupId) {
+  if (!(await uiConfirm("ยืนยันอนุมัติรายการนี้? เครดิตจะเข้าทันที", "อนุมัติเติมเครดิต"))) return;
+
+  const { error } = await client.rpc("admin_approve_topup", {
+    p_topup_id: topupId
+  });
+
+  if (error) {
+    showToast("อนุมัติไม่สำเร็จ: " + error.message, "error");
+    return;
+  }
+
+  showToast("อนุมัติสำเร็จ เครดิตเข้าแล้ว");
+
+  await loadProfile();
+  await loadMyTopups();
+  await loadAdminTopups();
+}
+
+
+async function rejectTopup(topupId) {
+  const note = (await uiPrompt("เหตุผลที่ปฏิเสธ เช่น สลิปไม่ชัด / ยอดไม่ตรง", "", "ปฏิเสธรายการ")) || "";
+
+  const { error } = await client.rpc("admin_reject_topup", {
+    p_topup_id: topupId,
+    p_note: note
+  });
+
+  if (error) {
+    showToast("ปฏิเสธไม่สำเร็จ: " + error.message, "error");
+    return;
+  }
+
+  showToast("ปฏิเสธรายการแล้ว");
+
+  await loadMyTopups();
+  await loadAdminTopups();
+}
+
+async function loadAdminMembers() {
+  if (currentProfile.role !== "admin") return;
+
+  const box = document.getElementById("adminMembersList");
+  if (!box) return;
+
+  const { data, error } = await client
+    .from("profiles")
+    .select("id, username, display_name, role, status, credit, created_at")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    box.innerHTML = "<p>โหลดสมาชิกไม่ได้: " + error.message + "</p>";
+    return;
+  }
+
+  const html = data.map(member => `
+    <div class="product">
+      <p><b>ชื่อผู้ใช้:</b> ${member.username}</p>
+      <p><b>ชื่อแสดง:</b> ${member.display_name || "-"}</p>
+      <p><b>ระดับ:</b> ${member.role}</p>
+      <p><b>สถานะ:</b> ${member.status}</p>
+      <p><b>เครดิต:</b> ${Number(member.credit).toFixed(2)} พอยต์</p>
+      <p><b>สมัครเมื่อ:</b> ${new Date(member.created_at).toLocaleString("th-TH")}</p>
+
+      <button onclick="setMemberStatus('${member.id}', 'active')">อนุมัติ / เปิดใช้งาน</button>
+      <button class="secondary" onclick="setMemberRole('${member.id}', 'vip')">ปรับเป็น VIP</button>
+      <button class="secondary" onclick="adjustMemberCredit('${member.id}', '${member.username}')">เติม/ลบเครดิต</button>
+      <button class="secondary" onclick="setMemberRole('${member.id}', 'agent')">ปรับเป็นตัวแทนปกติ</button>
+      <button class="danger" onclick="setMemberStatus('${member.id}', 'blocked')">ระงับบัญชี</button>
+    </div>
+  `).join("");
+
+  box.innerHTML = html || "<p>ยังไม่มีสมาชิก</p>";
+}
+
+
+async function setMemberStatus(memberId, status) {
+  if (currentProfile.role !== "admin") {
+    showToast("เฉพาะแอดมินเท่านั้น", "error");
+    return;
+  }
+
+  const confirmText = status === "active"
+    ? "ยืนยันเปิดใช้งานสมาชิกนี้?"
+    : "ยืนยันระงับบัญชีสมาชิกนี้?";
+
+  if (!(await uiConfirm(confirmText, "จัดการสมาชิก"))) return;
+
+  const { error } = await client
+    .from("profiles")
+    .update({ status: status })
+    .eq("id", memberId);
+
+  if (error) {
+    showToast("อัปเดตสถานะไม่สำเร็จ: " + error.message, "error");
+    return;
+  }
+
+  showToast("อัปเดตสถานะสำเร็จ");
+  await loadAdminMembers();
+}
+
+
+async function setMemberRole(memberId, role) {
+  if (currentProfile.role !== "admin") {
+    showToast("เฉพาะแอดมินเท่านั้น", "error");
+    return;
+  }
+
+  if (!(await uiConfirm("ยืนยันเปลี่ยนระดับสมาชิก?", "เปลี่ยนระดับสมาชิก"))) return;
+
+  const { error } = await client
+    .from("profiles")
+    .update({ role: role })
+    .eq("id", memberId);
+
+  if (error) {
+    showToast("เปลี่ยนระดับไม่สำเร็จ: " + error.message, "error");
+    return;
+  }
+
+  showToast("เปลี่ยนระดับสำเร็จ");
+  await loadAdminMembers();
+}
+
+async function adjustMemberCredit(memberId, username) {
+  if (currentProfile.role !== "admin") {
+    showToast("เฉพาะแอดมินเท่านั้น", "error");
+    return;
+  }
+
+  const amountText = await uiPrompt(
+    `ปรับเครดิตของ ${username}\nใส่จำนวนบวกเพื่อเติม เช่น 100\nใส่จำนวนลบเพื่อลด เช่น -50`,
+    "",
+    "เติม/ลบเครดิต",
+    "เช่น 100 หรือ -50"
+  );
+
+  if (amountText === null) return;
+
+  const amount = Number(amountText);
+
+  if (!amount || amount === 0) {
+    showToast("กรุณาใส่จำนวนเครดิตให้ถูกต้อง", "error");
+    return;
+  }
+
+  const note = (await uiPrompt("หมายเหตุ เช่น เติมมือ / คืนเครดิต / ปรับยอด", "แอดมินปรับเครดิต", "หมายเหตุ")) || "แอดมินปรับเครดิต";
+
+  const { error } = await client.rpc("admin_adjust_credit", {
+    p_user_id: memberId,
+    p_amount: amount,
+    p_note: note
+  });
+
+  if (error) {
+    showToast("ปรับเครดิตไม่สำเร็จ: " + error.message, "error");
+    return;
+  }
+
+  showToast("ปรับเครดิตสำเร็จ");
+
+  await loadAdminMembers();
+  await loadProfile();
+}
+
+async function loadCreditLogs() {
+  const box = document.getElementById("creditLogsList");
+  if (!box) return;
+
+  const { data, error } = await client
+    .from("credit_logs")
+    .select("id, amount, type, note, created_at")
+    .eq("user_id", currentUser.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    box.innerHTML = "<p>โหลดประวัติเครดิตไม่ได้: " + error.message + "</p>";
+    return;
+  }
+
+  const html = data.map(log => {
+    const amount = Number(log.amount);
+    const sign = amount > 0 ? "+" : "";
+    const color = amount > 0 ? "green" : "red";
+
+    let typeText = log.type;
+    if (log.type === "topup") typeText = "เติมเครดิต";
+    if (log.type === "purchase") typeText = "ซื้อสินค้า";
+    if (log.type === "refund") typeText = "คืนเครดิต";
+    if (log.type === "adjust") typeText = "แอดมินปรับเครดิต";
+
+    return `
+      <div class="product">
+        <p><b>ประเภท:</b> ${typeText}</p>
+        <p><b>จำนวน:</b> <span style="color:${color}; font-weight:bold;">${sign}${amount.toFixed(2)}</span> พอยต์</p>
+        <p><b>หมายเหตุ:</b> ${log.note || "-"}</p>
+        <p><b>เวลา:</b> ${new Date(log.created_at).toLocaleString("th-TH")}</p>
+      </div>
+    `;
+  }).join("");
+
+  box.innerHTML = html || "<p>ยังไม่มีประวัติเครดิต</p>";
+}
+
+async function loadAdminOrders() {
+  if (currentProfile.role !== "admin") return;
+
+  const box = document.getElementById("adminOrdersList");
+  if (!box) return;
+
+  box.innerHTML = `<p class="muted">กำลังโหลดออเดอร์...</p>`;
+
+  const { data, error } = await client
+    .from("orders")
+    .select("id, user_id, price, status, result_data, created_at, profiles(username), products(name)")
+    .order("created_at", { ascending: false })
+    .limit(100);
+
+  if (error) {
+    box.innerHTML = "<p>โหลดออเดอร์ไม่ได้: " + error.message + "</p>";
+    return;
+  }
+
+  adminOrdersCache = data || [];
+  renderAdminOrders(adminOrdersCache);
+}
+
+function renderAdminOrders(orders) {
+  const box = document.getElementById("adminOrdersList");
+  if (!box) return;
+
+  const keyword = (document.getElementById("adminOrderSearch")?.value || "").trim();
+
+  const html = orders.map(order => {
+    const detailId = `admin-order-detail-${order.id}`;
+    const resultText = order.result_data || "-";
+    return `
+      <div class="product">
+        <p><b>เลขออเดอร์:</b> ${escapeHTML(order.id.slice(0, 8))}</p>
+        <p><b>ตัวแทน:</b> ${escapeHTML(order.profiles?.username || order.user_id)}</p>
+        <p><b>สินค้า:</b> ${escapeHTML(order.products?.name || "-")}</p>
+        <p><b>ราคา:</b> ${Number(order.price).toFixed(2)} พอยต์</p>
+        <p><b>สถานะ:</b> ${escapeHTML(order.status)}</p>
+        <p><b>เวลา:</b> ${new Date(order.created_at).toLocaleString("th-TH")}</p>
+        <div class="detail-head">
+          <p><b>รายละเอียดที่ส่งให้ตัวแทน:</b></p>
+          <button class="copy-btn" onclick="copyFromElement('${detailId}')">คัดลอก</button>
+        </div>
+        <pre id="${detailId}">${escapeHTML(resultText)}</pre>
+
+        <button class="secondary" onclick="adminSetOrderStatus('${order.id}', 'success')">ตั้งเป็นสำเร็จ</button>
+        <button class="secondary" onclick="adminSetOrderStatus('${order.id}', 'problem')">แจ้งมีปัญหา</button>
+        <button class="danger" onclick="adminRefundOrder('${order.id}')">คืนเครดิต</button>
+      </div>
+    `;
+  }).join("");
+
+  if (html) {
+    box.innerHTML = html;
+    return;
+  }
+
+  box.innerHTML = keyword
+    ? `<p class="muted">ไม่เจอออเดอร์ที่ตรงกับคำว่า “${escapeHTML(keyword)}”</p>`
+    : "<p>ยังไม่มีออเดอร์</p>";
+}
+
+function filterAdminOrders() {
+  const keyword = (document.getElementById("adminOrderSearch")?.value || "")
+    .trim()
+    .toLowerCase();
+
+  if (!keyword) {
+    renderAdminOrders(adminOrdersCache);
+    return;
+  }
+
+  const filtered = adminOrdersCache.filter(order => {
+    const text = [
+      order.id,
+      order.user_id,
+      order.profiles?.username,
+      order.products?.name,
+      order.status,
+      order.price,
+      order.result_data,
+      new Date(order.created_at).toLocaleString("th-TH")
+    ].join(" ").toLowerCase();
+
+    return text.includes(keyword);
+  });
+
+  renderAdminOrders(filtered);
+}
+
+function clearAdminOrderSearch() {
+  const input = document.getElementById("adminOrderSearch");
+  if (input) input.value = "";
+  renderAdminOrders(adminOrdersCache);
+}
+
+async function adminSetOrderStatus(orderId, status) {
+  if (currentProfile.role !== "admin") {
+    showToast("เฉพาะแอดมินเท่านั้น", "error");
+    return;
+  }
+
+  if (!(await uiConfirm("ยืนยันเปลี่ยนสถานะออเดอร์?", "อัปเดตออเดอร์"))) return;
+
+  const { error } = await client.rpc("admin_update_order_status", {
+    p_order_id: orderId,
+    p_status: status
+  });
+
+  if (error) {
+    showToast("เปลี่ยนสถานะไม่สำเร็จ: " + error.message, "error");
+    return;
+  }
+
+  showToast("เปลี่ยนสถานะสำเร็จ");
+  await loadAdminOrders();
+  await loadOrders();
+}
+
+
+async function adminRefundOrder(orderId) {
+  if (currentProfile.role !== "admin") {
+    showToast("เฉพาะแอดมินเท่านั้น", "error");
+    return;
+  }
+
+  if (!(await uiConfirm("ยืนยันคืนเครดิตออเดอร์นี้? ระบบจะคืนเครดิตให้ตัวแทนทันที", "คืนเครดิต"))) return;
+
+  const { error } = await client.rpc("admin_refund_order", {
+    p_order_id: orderId
+  });
+
+  if (error) {
+    showToast("คืนเครดิตไม่สำเร็จ: " + error.message, "error");
+    return;
+  }
+
+  showToast("คืนเครดิตสำเร็จ");
+
+  await loadProfile();
+  await loadAdminOrders();
+  await loadOrders();
+  await loadCreditLogs();
+}
+  init();
+</script>
+</body>
+</html>
