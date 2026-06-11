@@ -714,6 +714,63 @@
       line-height: 1.7;
     }
 
+
+
+    /* Stock state & delete action upgrades */
+    .product.is-soldout {
+      opacity: .86;
+      background: rgba(255,255,255,.62);
+      border-color: rgba(230,57,86,.18);
+    }
+    .stock-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      margin: 4px 0 8px;
+    }
+    .stock-badge.in-stock {
+      background: rgba(22,163,109,.12);
+      color: #0a7f55;
+      border: 1px solid rgba(22,163,109,.18);
+    }
+    .stock-badge.out-stock {
+      background: rgba(230,57,86,.12);
+      color: #c62342;
+      border: 1px solid rgba(230,57,86,.18);
+    }
+    .buy-btn {
+      background: linear-gradient(135deg, #0c8f62, #16c98f) !important;
+      box-shadow: 0 12px 26px rgba(22,163,109,.20) !important;
+    }
+    .soldout-btn,
+    button:disabled {
+      cursor: not-allowed !important;
+      background: linear-gradient(135deg, #a69aaf, #c5b9cc) !important;
+      color: rgba(255,255,255,.88) !important;
+      box-shadow: none !important;
+      opacity: .78 !important;
+      transform: none !important;
+    }
+    .delete-soft {
+      background: linear-gradient(135deg, #b42342, #ff5d7e) !important;
+      color: #fff !important;
+    }
+    .danger-outline {
+      background: rgba(230,57,86,.10) !important;
+      color: #c62342 !important;
+      border: 1px solid rgba(230,57,86,.22) !important;
+      box-shadow: none !important;
+    }
+    .action-note {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+      margin-top: 8px;
+    }
     @media (max-width: 860px) {
       .hero-grid, .auth-shell, .admin-grid { grid-template-columns: 1fr; }
       .dashboard-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
@@ -839,7 +896,7 @@
         <div class="hero-grid">
           <div>
             <div class="eyebrow">🚀 Agent Dashboard</div>
-            <h1>จัดการออเดอร์<br>ไม่ต้องรอแอดมิน</h1>
+            <h1>จัดการออเดอร์<br></h1>
             <p>รวมเมนูที่ต้องใช้บ่อยไว้ให้ครบ เติมเงิน เช็กสินค้า กดซื้อ และดูประวัติได้เองจากหน้านี้</p>
             <div class="hero-actions">
               <button onclick="showPage('products')">🛒 เลือกสินค้า</button>
@@ -1543,18 +1600,23 @@ await loadAdminStockItems();
   }
 
   function renderProductsGrid(products) {
-    const html = products.map(item => `
-      <div class="product">
+    const html = products.map(item => {
+      const stockCount = Number(item.stock_count || 0);
+      const hasStock = stockCount > 0;
+      return `
+      <div class="product ${hasStock ? "" : "is-soldout"}">
         <span class="status-pill">${escapeHTML(item.category_name || "อื่น ๆ")}</span>
         <h3 style="margin-top:12px;">${escapeHTML(item.product_name)}</h3>
         <p>${escapeHTML(item.description || "รายละเอียดจะแจ้งหลังสั่งซื้อ")}</p>
         <p class="price">${Number(item.price).toFixed(2)} พอยต์</p>
-        <p>เหลือในระบบ: <b>${item.stock_count}</b></p>
-        <button ${Number(item.stock_count || 0) <= 0 ? "disabled" : ""} onclick="buyProduct('${item.product_id}')">
-          ${Number(item.stock_count || 0) > 0 ? "กดซื้อ" : "สินค้าหมด"}
+        <div class="stock-badge ${hasStock ? "in-stock" : "out-stock"}">
+          ${hasStock ? `พร้อมซื้อ • เหลือ ${stockCount} ชิ้น` : "สินค้าหมด"}
+        </div>
+        <button class="${hasStock ? "buy-btn" : "soldout-btn"}" ${hasStock ? "" : "disabled"} onclick="buyProduct('${item.product_id}')">
+          ${hasStock ? "กดซื้อสินค้า" : "สินค้าหมด"}
         </button>
-      </div>
-    `).join("");
+      </div>`;
+    }).join("");
 
     document.getElementById("productsGrid").innerHTML = html || "<p>ยังไม่มีสินค้าในหมวดนี้</p>";
   }
@@ -1660,6 +1722,7 @@ function renderAdminProductsList() {
       <div class="inline-actions">
         <button class="secondary" onclick="startProductEdit('${p.id}')">แก้ไขสินค้า</button>
         <button class="${p.is_active ? 'danger' : 'success'}" onclick="adminToggleProduct('${p.id}', ${p.is_active ? 'false' : 'true'})">${p.is_active ? 'ปิดขาย' : 'เปิดขาย'}</button>
+        <button class="delete-soft" onclick="adminDeleteProduct('${p.id}', '${p.name.replace(/'/g, "&#039;")}')">ลบสินค้า</button>
       </div>
     </div>
   `).join("") || '<div class="empty-state">ยังไม่มีสินค้า หรือไม่เจอรายการที่ค้นหา</div>';
@@ -1730,6 +1793,44 @@ async function adminToggleProduct(productId, active) {
   showToast("อัปเดตสถานะสินค้าแล้ว");
   await loadAdminProducts();
   await loadProducts();
+}
+
+
+async function adminDeleteProduct(productId, productName = "") {
+  if (currentProfile.role !== "admin") {
+    showToast("เฉพาะแอดมินเท่านั้น", "error");
+    return;
+  }
+
+  if (!(await uiConfirm(`ต้องการลบสินค้า ${productName || "รายการนี้"} ใช่ไหม?\nถ้าสินค้านี้เคยมีออเดอร์ ระบบอาจลบจริงไม่ได้เพื่อรักษาประวัติลูกค้า`, "ลบสินค้า"))) return;
+
+  const { error } = await client
+    .from("products")
+    .delete()
+    .eq("id", productId);
+
+  if (error) {
+    const fallback = await uiConfirm(
+      "ลบสินค้าแบบถาวรไม่ได้ อาจเพราะมีประวัติออเดอร์หรือข้อมูลผูกอยู่\nต้องการปิดการขายสินค้านี้แทนไหม?",
+      "ลบสินค้าไม่สำเร็จ"
+    );
+    if (fallback) {
+      const { error: updateError } = await client.from("products").update({ is_active: false }).eq("id", productId);
+      if (updateError) {
+        showToast("ปิดการขายไม่สำเร็จ: " + updateError.message, "error");
+        return;
+      }
+      showToast("ปิดการขายสินค้าแทนการลบแล้ว");
+    } else {
+      showToast("ลบสินค้าไม่สำเร็จ: " + error.message, "error", 4200);
+    }
+  } else {
+    showToast("ลบสินค้าแล้ว");
+  }
+
+  await loadAdminProducts();
+  await loadProducts();
+  await loadAdminStockItems();
 }
 
 async function adminAddStock() {
@@ -1814,6 +1915,7 @@ function renderAdminCategoriesList() {
       <div class="inline-actions">
         <button class="secondary" onclick="adminEditCategory('${c.id}')">แก้ไขหมวด</button>
         <button class="${c.is_active ? 'danger' : 'success'}" onclick="adminToggleCategory('${c.id}', ${c.is_active ? 'false' : 'true'})">${c.is_active ? 'ปิดหมวด' : 'เปิดหมวด'}</button>
+        <button class="delete-soft" onclick="adminDeleteCategory('${c.id}', '${c.name.replace(/'/g, "&#039;")}')">ลบหมวด</button>
       </div>
     </div>
   `).join("") || '<div class="empty-state">ยังไม่มีหมวดสินค้า</div>';
@@ -1884,6 +1986,44 @@ async function adminToggleCategory(categoryId, active) {
   }
   showToast("อัปเดตหมวดหมู่แล้ว");
   await loadAdminCategories();
+  await loadProducts();
+}
+
+
+async function adminDeleteCategory(categoryId, categoryName = "") {
+  if (currentProfile.role !== "admin") {
+    showToast("เฉพาะแอดมินเท่านั้น", "error");
+    return;
+  }
+
+  if (!(await uiConfirm(`ต้องการลบหมวด ${categoryName || "นี้"} ใช่ไหม?\nสินค้าที่อยู่ในหมวดนี้อาจถูกย้ายเป็นไม่ระบุหมวด หรือระบบอาจไม่ให้ลบถ้ามีข้อมูลผูกอยู่`, "ลบหมวดหมู่"))) return;
+
+  const { error } = await client
+    .from("categories")
+    .delete()
+    .eq("id", categoryId);
+
+  if (error) {
+    const fallback = await uiConfirm(
+      "ลบหมวดแบบถาวรไม่ได้ อาจเพราะยังมีสินค้าผูกอยู่\nต้องการปิดหมวดนี้แทนไหม?",
+      "ลบหมวดไม่สำเร็จ"
+    );
+    if (fallback) {
+      const { error: updateError } = await client.from("categories").update({ is_active: false }).eq("id", categoryId);
+      if (updateError) {
+        showToast("ปิดหมวดไม่สำเร็จ: " + updateError.message, "error");
+        return;
+      }
+      showToast("ปิดหมวดแทนการลบแล้ว");
+    } else {
+      showToast("ลบหมวดไม่สำเร็จ: " + error.message, "error", 4200);
+    }
+  } else {
+    showToast("ลบหมวดหมู่แล้ว");
+  }
+
+  await loadAdminCategories();
+  await loadAdminProducts();
   await loadProducts();
 }
 
@@ -1981,6 +2121,7 @@ function renderAdminStockItems() {
         <button class="secondary" onclick="startStockEdit('${s.id}')">แก้ไขสต๊อก</button>
         <button class="success" onclick="adminSetStockStatus('${s.id}', 'available')">พร้อมขาย</button>
         <button class="danger" onclick="adminSetStockStatus('${s.id}', 'disabled')">ปิดสต๊อก</button>
+        <button class="delete-soft" onclick="adminDeleteStock('${s.id}')">ลบสต๊อก</button>
       </div>
     </div>
   `).join("") || '<div class="empty-state">ยังไม่มีสต๊อกในสินค้านี้ หรือไม่เจอรายการที่ค้นหา</div>';
@@ -2040,6 +2181,45 @@ async function adminSetStockStatus(stockId, status) {
     return;
   }
   showToast("อัปเดตสต๊อกแล้ว");
+  await loadAdminStockItems();
+  await loadProducts();
+}
+
+
+async function adminDeleteStock(stockId) {
+  if (currentProfile.role !== "admin") {
+    showToast("เฉพาะแอดมินเท่านั้น", "error");
+    return;
+  }
+
+  const stock = adminStockCache.find(x => x.id === stockId);
+  const statusText = stock?.status ? `\nสถานะปัจจุบัน: ${stock.status}` : "";
+  if (!(await uiConfirm(`ต้องการลบสต๊อกชิ้นนี้ออกจากระบบใช่ไหม?${statusText}\nแนะนำให้ลบเฉพาะสต๊อกที่ยังไม่ได้ขาย`, "ลบสต๊อก"))) return;
+
+  const { error } = await client
+    .from("stock_items")
+    .delete()
+    .eq("id", stockId);
+
+  if (error) {
+    const fallback = await uiConfirm(
+      "ลบสต๊อกแบบถาวรไม่ได้ อาจเพราะถูกผูกกับประวัติออเดอร์แล้ว\nต้องการปิดสต๊อกนี้แทนไหม?",
+      "ลบสต๊อกไม่สำเร็จ"
+    );
+    if (fallback) {
+      const { error: updateError } = await client.from("stock_items").update({ status: "disabled" }).eq("id", stockId);
+      if (updateError) {
+        showToast("ปิดสต๊อกไม่สำเร็จ: " + updateError.message, "error");
+        return;
+      }
+      showToast("ปิดสต๊อกแทนการลบแล้ว");
+    } else {
+      showToast("ลบสต๊อกไม่สำเร็จ: " + error.message, "error", 4200);
+    }
+  } else {
+    showToast("ลบสต๊อกแล้ว");
+  }
+
   await loadAdminStockItems();
   await loadProducts();
 }
