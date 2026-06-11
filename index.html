@@ -612,6 +612,108 @@
     }
 
 
+
+
+    /* Category & admin management upgrades */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+      margin-top: 12px;
+    }
+    .category-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 155px;
+      padding: 20px;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,.86);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.92), rgba(255,245,251,.78)),
+        radial-gradient(circle at 100% 0%, rgba(255,79,163,.22), transparent 46%);
+      box-shadow: 0 16px 42px rgba(100, 44, 90, .10);
+      cursor: pointer;
+      transition: transform .16s ease, box-shadow .16s ease;
+    }
+    .category-card:hover { transform: translateY(-3px); box-shadow: 0 20px 52px rgba(100,44,90,.16); }
+    .category-card h3 { font-size: 21px; margin: 10px 0 8px; }
+    .category-card .cat-icon {
+      width: 48px; height: 48px; border-radius: 17px;
+      display: grid; place-items: center;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: #fff; font-size: 22px;
+      box-shadow: 0 12px 28px rgba(255,79,163,.25);
+    }
+    .category-card .cat-meta { color: var(--muted); line-height: 1.65; font-size: 13px; }
+    .category-toolbar, .mobile-toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding: 12px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.68);
+      border: 1px solid rgba(255,255,255,.82);
+    }
+    .category-toolbar .left { min-width: 0; }
+    .category-toolbar h3 { margin: 0; }
+    .category-toolbar button { width: auto; margin: 0; }
+    .pill-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .mini-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(123,76,255,.10);
+      color: #5630b8;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .form-grid .full { grid-column: 1 / -1; }
+    .admin-list-tools {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: end;
+      margin: 14px 0;
+      padding: 12px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.68);
+      border: 1px solid rgba(255,255,255,.82);
+    }
+    .admin-list-tools button { width: auto; margin-top: 0; white-space: nowrap; }
+    .inline-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .inline-actions button { width: auto; margin: 0; padding: 9px 12px; border-radius: 999px; font-size: 13px; }
+    .edit-panel {
+      margin-top: 14px;
+      padding: 16px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(255,255,255,.82);
+      box-shadow: 0 12px 30px rgba(100,44,90,.08);
+    }
+    .empty-state {
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.62);
+      border: 1px dashed rgba(123,76,255,.22);
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
     @media (max-width: 860px) {
       .hero-grid, .auth-shell, .admin-grid { grid-template-columns: 1fr; }
       .dashboard-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
@@ -630,6 +732,41 @@
       .hero, .card, .page-card { border-radius: 22px; }
       button { padding: 12px 13px; }
     }
+
+
+    @media (max-width: 620px) {
+      body { background-size: auto; }
+      .topbar { position: sticky; }
+      .topbar-inner { gap: 8px; }
+      .user-pill { padding: 8px 10px; font-size: 12px; }
+      .hero { padding: 22px 16px; }
+      .hero h1 { font-size: 34px; }
+      .hero-actions button { width: 100%; }
+      .menu {
+        position: sticky;
+        top: 67px;
+        margin-left: -4px;
+        margin-right: -4px;
+        padding: 8px;
+        border-radius: 18px;
+        scroll-snap-type: x mandatory;
+      }
+      .menu button { scroll-snap-align: start; padding: 10px 13px; font-size: 13px; }
+      .section-head { display: block; }
+      .grid, .category-grid { grid-template-columns: 1fr; gap: 12px; }
+      .product, .category-card, .stat-card, .admin-section { border-radius: 18px; padding: 15px; }
+      .product button, .admin-section button:not(.copy-btn) { min-height: 44px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .admin-list-tools, .admin-search-box { grid-template-columns: 1fr; }
+      .admin-list-tools button, .admin-search-box button { width: 100%; }
+      .admin-tabs { overflow-x: auto; flex-wrap: nowrap; padding: 8px; }
+      .admin-tabs button { flex: 0 0 auto; white-space: nowrap; }
+      .inline-actions { display: grid; grid-template-columns: 1fr; }
+      .inline-actions button { width: 100%; }
+      .detail-head { align-items: flex-start; }
+      .copy-btn { flex: 0 0 auto; }
+    }
+
   </style>
 </head>
 <body>
@@ -702,7 +839,7 @@
         <div class="hero-grid">
           <div>
             <div class="eyebrow">🚀 Agent Dashboard</div>
-            <h1>จัดการออเดอร์<br>รวดเร็ว</h1>
+            <h1>จัดการออเดอร์<br>แบบมือโปร</h1>
             <p>รวมเมนูที่ต้องใช้บ่อยไว้ให้ครบ เติมเงิน เช็กสินค้า กดซื้อ และดูประวัติได้เองจากหน้านี้</p>
             <div class="hero-actions">
               <button onclick="showPage('products')">🛒 เลือกสินค้า</button>
@@ -747,11 +884,29 @@
       <div id="productsPage" class="page-card hidden">
         <div class="section-head">
           <div>
-            <div class="section-title"><span class="section-icon">🛍️</span><h2>สินค้าทั้งหมด</h2></div>
-            <p>เลือกแพ็กเกจที่ต้องการ กดซื้อแล้วระบบจะหักเครดิตและส่งรายละเอียดให้ทันที</p>
+            <div class="section-title"><span class="section-icon">🛍️</span><h2>สินค้า</h2></div>
+            <p>เริ่มจากเลือกหมวดหมู่ก่อน แล้วค่อยเลือกแพ็กเกจที่ต้องการ ระบบจะหักเครดิตและส่งรายละเอียดให้ทันที</p>
           </div>
         </div>
-        <div id="productsGrid" class="grid"></div>
+        <div id="categoryView">
+          <div class="mobile-toolbar">
+            <div>
+              <h3>เลือกหมวดหมู่สินค้า</h3>
+              <p class="muted" style="margin:4px 0 0;">จัดสินค้าแยกหมวดให้ค้นหาง่ายขึ้น โดยเฉพาะเวลาเปิดในมือถือ</p>
+            </div>
+          </div>
+          <div id="categoryGrid" class="category-grid"></div>
+        </div>
+        <div id="productListView" class="hidden">
+          <div class="category-toolbar">
+            <div class="left">
+              <h3 id="selectedCategoryTitle">สินค้าในหมวด</h3>
+              <p class="muted" id="selectedCategoryMeta" style="margin:4px 0 0;"></p>
+            </div>
+            <button class="secondary" onclick="backToCategories()">← กลับไปเลือกหมวด</button>
+          </div>
+          <div id="productsGrid" class="grid"></div>
+        </div>
       </div>
 
       <div id="topupPage" class="page-card hidden">
@@ -803,7 +958,8 @@
           <button id="adminTabOrders" class="active" onclick="switchAdminTab('orders')">📦 ออเดอร์</button>
           <button id="adminTabMembers" onclick="switchAdminTab('members')">👥 สมาชิก</button>
           <button id="adminTabTopups" onclick="switchAdminTab('topups')">🧾 เติมเงิน</button>
-          <button id="adminTabProducts" onclick="switchAdminTab('products')">➕ เพิ่มสินค้า</button>
+          <button id="adminTabCategories" onclick="switchAdminTab('categories')">🗂️ หมวดหมู่</button>
+          <button id="adminTabProducts" onclick="switchAdminTab('products')">🛍️ สินค้า</button>
           <button id="adminTabStock" onclick="switchAdminTab('stock')">📥 สต๊อก</button>
         </div>
 
@@ -839,38 +995,161 @@
           </div>
         </div>
 
+        <div id="adminPanelCategories" class="admin-panel hidden">
+          <div class="admin-section full">
+            <h3>🗂️ จัดการหมวดหมู่สินค้า</h3>
+            <p class="muted">เพิ่มหมวด แก้ชื่อ เปิด/ปิดหมวด และเรียงลำดับหน้าร้านได้จากตรงนี้</p>
+            <div class="form-grid">
+              <div>
+                <label>ชื่อหมวดใหม่</label>
+                <input id="newCategoryName" placeholder="เช่น Netflix / YouTube / เติมเกม" />
+              </div>
+              <div>
+                <label>ลำดับการแสดง</label>
+                <input id="newCategorySort" type="number" placeholder="เช่น 1" />
+              </div>
+              <div class="full">
+                <label>รูปภาพหมวดหมู่ (ถ้ามี)</label>
+                <input id="newCategoryImage" placeholder="วางลิงก์รูปภาพ หรือปล่อยว่าง" />
+              </div>
+            </div>
+            <button onclick="adminAddCategory()">เพิ่มหมวดหมู่</button>
+            <hr>
+            <h3>หมวดหมู่ที่มีในระบบ</h3>
+            <div id="adminCategoriesList"></div>
+          </div>
+        </div>
+
         <div id="adminPanelProducts" class="admin-panel hidden">
           <div class="admin-section full">
-            <h3>➕ เพิ่มสินค้าใหม่</h3>
-            <label>หมวดสินค้า</label>
-            <select id="newProductCategory"></select>
-            <label>ชื่อสินค้า</label>
-            <input id="newProductName" placeholder="เช่น NETFLIX 30 วัน" />
-            <label>รายละเอียดสินค้า</label>
-            <textarea id="newProductDesc" rows="3" placeholder="เช่น Netflix 30 วัน สำหรับตัวแทน"></textarea>
-            <label>ราคา / พอยต์</label>
-            <input id="newProductPrice" type="number" placeholder="เช่น 150" />
-            <label>ประเภทสินค้า</label>
-            <select id="newProductType">
-              <option value="stock">ส่งสต๊อกอัตโนมัติ</option>
-              <option value="manual">รอแอดมินทำรายการ</option>
-            </select>
+            <h3>🛍️ เพิ่ม / แก้ไขสินค้า</h3>
+            <p class="muted">เพิ่มสินค้าใหม่ แก้ชื่อ ราคา รายละเอียด หมวดหมู่ หรือปิดการขายชั่วคราวได้เลย</p>
+            <div class="form-grid">
+              <div>
+                <label>หมวดสินค้า</label>
+                <select id="newProductCategory"></select>
+              </div>
+              <div>
+                <label>ประเภทสินค้า</label>
+                <select id="newProductType">
+                  <option value="stock">ส่งสต๊อกอัตโนมัติ</option>
+                  <option value="manual">รอแอดมินทำรายการ</option>
+                </select>
+              </div>
+              <div class="full">
+                <label>ชื่อสินค้า</label>
+                <input id="newProductName" placeholder="เช่น NETFLIX 30 วัน" />
+              </div>
+              <div class="full">
+                <label>รายละเอียดสินค้า</label>
+                <textarea id="newProductDesc" rows="3" placeholder="เขียนรายละเอียดแบบที่ตัวแทนอ่านแล้วเข้าใจง่าย"></textarea>
+              </div>
+              <div>
+                <label>ราคา / พอยต์</label>
+                <input id="newProductPrice" type="number" placeholder="เช่น 150" />
+              </div>
+              <div>
+                <label>ลิงก์รูปสินค้า (ถ้ามี)</label>
+                <input id="newProductImage" placeholder="วางลิงก์รูป หรือปล่อยว่าง" />
+              </div>
+            </div>
             <button onclick="adminAddProduct()">เพิ่มสินค้า</button>
+            <hr>
+            <div class="admin-list-tools">
+              <div>
+                <label>ค้นหาสินค้าในหลังบ้าน</label>
+                <input id="adminProductSearch" type="search" placeholder="ค้นหาจากชื่อ หมวด ราคา หรือสถานะ" oninput="renderAdminProductsList()" />
+              </div>
+              <button type="button" onclick="clearAdminProductSearch()">ล้างค้นหา</button>
+            </div>
+            <div id="adminProductsList"></div>
+            <div id="productEditPanel" class="edit-panel hidden">
+              <h3>แก้ไขสินค้า</h3>
+              <input id="editProductId" type="hidden" />
+              <div class="form-grid">
+                <div>
+                  <label>หมวดสินค้า</label>
+                  <select id="editProductCategory"></select>
+                </div>
+                <div>
+                  <label>ประเภทสินค้า</label>
+                  <select id="editProductType">
+                    <option value="stock">ส่งสต๊อกอัตโนมัติ</option>
+                    <option value="manual">รอแอดมินทำรายการ</option>
+                  </select>
+                </div>
+                <div class="full">
+                  <label>ชื่อสินค้า</label>
+                  <input id="editProductName" />
+                </div>
+                <div class="full">
+                  <label>รายละเอียดสินค้า</label>
+                  <textarea id="editProductDesc" rows="3"></textarea>
+                </div>
+                <div>
+                  <label>ราคา / พอยต์</label>
+                  <input id="editProductPrice" type="number" />
+                </div>
+                <div>
+                  <label>ลิงก์รูปสินค้า</label>
+                  <input id="editProductImage" />
+                </div>
+                <div>
+                  <label>สถานะสินค้า</label>
+                  <select id="editProductActive">
+                    <option value="true">เปิดขาย</option>
+                    <option value="false">ปิดการขาย</option>
+                  </select>
+                </div>
+              </div>
+              <div class="inline-actions">
+                <button onclick="adminSaveProductEdit()">บันทึกสินค้า</button>
+                <button class="secondary" onclick="cancelProductEdit()">ยกเลิก</button>
+              </div>
+            </div>
           </div>
         </div>
 
         <div id="adminPanelStock" class="admin-panel hidden">
           <div class="admin-section full">
-            <h3>📥 เติมสต๊อกสินค้า</h3>
-            <p class="muted">ใส่สต๊อก 1 บรรทัด = 1 ชิ้น ระบบจะจ่ายตามลำดับที่เติมเข้าไปก่อน</p>
+            <h3>📥 เติม / แก้ไขสต๊อกสินค้า</h3>
+            <p class="muted">เพิ่มสต๊อกแบบหลายบรรทัด แก้ไขรายละเอียดสต๊อกที่เติมไปแล้ว หรือปิดสต๊อกที่ไม่ต้องการขาย</p>
             <label>เลือกสินค้า</label>
-            <select id="stockProduct"></select>
-            <label>ข้อมูลสต๊อก</label>
+            <select id="stockProduct" onchange="loadAdminStockItems()"></select>
+            <label>ข้อมูลสต๊อกใหม่</label>
             <textarea id="stockData" rows="7" placeholder="ตัวอย่าง:
 email1@gmail.com / pass123 / โปรไฟล์ 1 / PIN 1111 / หมด 12-12
 email2@gmail.com / pass456 / โปรไฟล์ 2 / PIN 2222 / หมด 12-12"></textarea>
             <button onclick="adminAddStock()">เพิ่มสต๊อก</button>
             <div id="adminResult" style="margin-top:15px;"></div>
+            <hr>
+            <div class="admin-list-tools">
+              <div>
+                <label>ค้นหาสต๊อก</label>
+                <input id="adminStockSearch" type="search" placeholder="ค้นหาจากข้อมูลสต๊อก สถานะ หรือชื่อสินค้า" oninput="renderAdminStockItems()" />
+              </div>
+              <button type="button" onclick="clearAdminStockSearch()">ล้างค้นหา</button>
+            </div>
+            <div id="adminStockList"></div>
+            <div id="stockEditPanel" class="edit-panel hidden">
+              <h3>แก้ไขสต๊อก</h3>
+              <input id="editStockId" type="hidden" />
+              <label>สินค้า</label>
+              <select id="editStockProduct"></select>
+              <label>รายละเอียดสต๊อก</label>
+              <textarea id="editStockData" rows="5"></textarea>
+              <label>สถานะสต๊อก</label>
+              <select id="editStockStatus">
+                <option value="available">available - พร้อมขาย</option>
+                <option value="disabled">disabled - ปิดไว้ก่อน</option>
+                <option value="sold">sold - ขายแล้ว</option>
+                <option value="reserved">reserved - จองไว้</option>
+              </select>
+              <div class="inline-actions">
+                <button onclick="adminSaveStockEdit()">บันทึกสต๊อก</button>
+                <button class="secondary" onclick="cancelStockEdit()">ยกเลิก</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -887,6 +1166,10 @@ email2@gmail.com / pass456 / โปรไฟล์ 2 / PIN 2222 / หมด 12-1
   let currentUser = null;
   let currentProfile = null;
   let adminOrdersCache = [];
+  let allProductsCache = [];
+  let allCategoriesCache = [];
+  let adminProductsCache = [];
+  let adminStockCache = [];
 
   function showToast(message, type = "success", duration = 2600) {
     const root = document.getElementById("toastRoot");
@@ -1017,13 +1300,19 @@ email2@gmail.com / pass456 / โปรไฟล์ 2 / PIN 2222 / หมด 12-1
   }
 
   function switchAdminTab(tab) {
-    const tabs = ["orders", "members", "topups", "products", "stock"];
+    const tabs = ["orders", "members", "topups", "categories", "products", "stock"];
     tabs.forEach((name) => {
       const panel = document.getElementById(`adminPanel${name.charAt(0).toUpperCase() + name.slice(1)}`);
       const button = document.getElementById(`adminTab${name.charAt(0).toUpperCase() + name.slice(1)}`);
       if (panel) panel.classList.toggle("hidden", name !== tab);
       if (button) button.classList.toggle("active", name === tab);
     });
+    if (tab === "categories") loadAdminCategories();
+    if (tab === "products") loadAdminProducts();
+    if (tab === "stock") loadAdminStockItems();
+    if (tab === "orders") loadAdminOrders();
+    if (tab === "members") loadAdminMembers();
+    if (tab === "topups") loadAdminTopups();
   }
 
   async function init() {
@@ -1100,6 +1389,7 @@ await loadAdminProducts();
 await loadAdminTopups();
 await loadAdminMembers();
 await loadAdminOrders();
+await loadAdminStockItems();
   }
 
   await loadProducts();
@@ -1139,7 +1429,10 @@ await loadAdminOrders();
 
   if (page === "home") document.getElementById("homePage").classList.remove("hidden");
 
-  if (page === "products") document.getElementById("productsPage").classList.remove("hidden");
+  if (page === "products") {
+    document.getElementById("productsPage").classList.remove("hidden");
+    showProductCategories();
+  }
   if (page === "history") document.getElementById("historyPage").classList.remove("hidden");
   if (page === "topup") {
     document.getElementById("topupPage").classList.remove("hidden");
@@ -1159,6 +1452,8 @@ await loadAdminOrders();
    loadAdminTopups();
    loadAdminMembers();
    loadAdminOrders();
+   loadAdminProducts();
+   loadAdminStockItems();
   }
 }
 
@@ -1166,24 +1461,102 @@ await loadAdminOrders();
     const { data, error } = await client.rpc("get_products");
 
     if (error) {
-      document.getElementById("productsGrid").innerHTML = "<p>โหลดสินค้าไม่ได้: " + error.message + "</p>";
+      document.getElementById("categoryGrid").innerHTML = "<p>โหลดสินค้าไม่ได้: " + error.message + "</p>";
       return;
     }
 
-    const html = data.map(item => `
+    allProductsCache = data || [];
+    renderProductCategories();
+  }
+
+  function getCategoryIcon(categoryName = "") {
+    const name = categoryName.toLowerCase();
+    if (name.includes("netflix")) return "🎬";
+    if (name.includes("youtube")) return "▶️";
+    if (name.includes("disney")) return "🏰";
+    if (name.includes("iqiyi")) return "🍿";
+    if (name.includes("wetv")) return "📺";
+    if (name.includes("viu")) return "🌟";
+    if (name.includes("game") || name.includes("เกม")) return "🎮";
+    return "🛍️";
+  }
+
+  function renderProductCategories() {
+    const box = document.getElementById("categoryGrid");
+    if (!box) return;
+
+    const groups = new Map();
+    allProductsCache.forEach(item => {
+      const name = item.category_name || "อื่น ๆ";
+      if (!groups.has(name)) groups.set(name, { name, count: 0, stock: 0, minPrice: null });
+      const group = groups.get(name);
+      group.count += 1;
+      group.stock += Number(item.stock_count || 0);
+      const price = Number(item.price || 0);
+      group.minPrice = group.minPrice === null ? price : Math.min(group.minPrice, price);
+    });
+
+    const categories = Array.from(groups.values());
+
+    if (!categories.length) {
+      box.innerHTML = '<div class="empty-state">ยังไม่มีสินค้าในระบบ รอแอดมินเพิ่มสินค้าก่อนนะคะ</div>';
+      document.getElementById("productListView").classList.add("hidden");
+      document.getElementById("categoryView").classList.remove("hidden");
+      return;
+    }
+
+    box.innerHTML = categories.map(cat => `
+      <div class="category-card" onclick="openProductCategory('${encodeURIComponent(cat.name)}')">
+        <div class="cat-icon">${getCategoryIcon(cat.name)}</div>
+        <h3>${escapeHTML(cat.name)}</h3>
+        <div class="cat-meta">มี ${cat.count} รายการ • สต๊อกรวม ${cat.stock} ชิ้น</div>
+        <div class="pill-row">
+          <span class="mini-pill">เริ่ม ${Number(cat.minPrice || 0).toFixed(2)} พอยต์</span>
+          <span class="mini-pill">แตะเพื่อดูสินค้า</span>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  function showProductCategories() {
+    const categoryView = document.getElementById("categoryView");
+    const productListView = document.getElementById("productListView");
+    if (categoryView) categoryView.classList.remove("hidden");
+    if (productListView) productListView.classList.add("hidden");
+    renderProductCategories();
+  }
+
+  function backToCategories() {
+    showProductCategories();
+  }
+
+  function openProductCategory(encodedCategoryName) {
+    const categoryName = decodeURIComponent(encodedCategoryName);
+    const products = allProductsCache.filter(item => (item.category_name || "อื่น ๆ") === categoryName);
+
+    document.getElementById("categoryView").classList.add("hidden");
+    document.getElementById("productListView").classList.remove("hidden");
+    document.getElementById("selectedCategoryTitle").innerText = `${getCategoryIcon(categoryName)} ${categoryName}`;
+    document.getElementById("selectedCategoryMeta").innerText = `พบ ${products.length} รายการในหมวดนี้`;
+
+    renderProductsGrid(products);
+  }
+
+  function renderProductsGrid(products) {
+    const html = products.map(item => `
       <div class="product">
-        <h3>${item.product_name}</h3>
-        <p class="muted">${item.category_name || ""}</p>
-        <p>${item.description || ""}</p>
+        <span class="status-pill">${escapeHTML(item.category_name || "อื่น ๆ")}</span>
+        <h3 style="margin-top:12px;">${escapeHTML(item.product_name)}</h3>
+        <p>${escapeHTML(item.description || "รายละเอียดจะแจ้งหลังสั่งซื้อ")}</p>
         <p class="price">${Number(item.price).toFixed(2)} พอยต์</p>
         <p>เหลือในระบบ: <b>${item.stock_count}</b></p>
-        <button onclick="buyProduct('${item.product_id}')">
-          ${item.stock_count > 0 ? "กดซื้อ" : "สินค้าหมด"}
+        <button ${Number(item.stock_count || 0) <= 0 ? "disabled" : ""} onclick="buyProduct('${item.product_id}')">
+          ${Number(item.stock_count || 0) > 0 ? "กดซื้อ" : "สินค้าหมด"}
         </button>
       </div>
     `).join("");
 
-    document.getElementById("productsGrid").innerHTML = html || "<p>ยังไม่มีสินค้า</p>";
+    document.getElementById("productsGrid").innerHTML = html || "<p>ยังไม่มีสินค้าในหมวดนี้</p>";
   }
 
   async function buyProduct(productId) {
@@ -1243,7 +1616,7 @@ await loadAdminOrders();
 
   const { data, error } = await client
     .from("products")
-    .select("id, name, price")
+    .select("id, category_id, name, description, image_url, price, product_type, is_active, created_at, categories(name)")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -1251,13 +1624,112 @@ await loadAdminOrders();
     return;
   }
 
-  const options = data.map(p => `
+  adminProductsCache = data || [];
+
+  const options = adminProductsCache.map(p => `
     <option value="${p.id}">
-      ${p.name} - ${Number(p.price).toFixed(2)} พอยต์
+      ${escapeHTML(p.name)} - ${Number(p.price).toFixed(2)} พอยต์
     </option>
   `).join("");
 
-  document.getElementById("stockProduct").innerHTML = options;
+  const stockProduct = document.getElementById("stockProduct");
+  const editStockProduct = document.getElementById("editStockProduct");
+  if (stockProduct) stockProduct.innerHTML = options;
+  if (editStockProduct) editStockProduct.innerHTML = options;
+
+  renderAdminProductsList();
+}
+
+function renderAdminProductsList() {
+  const box = document.getElementById("adminProductsList");
+  if (!box) return;
+
+  const keyword = (document.getElementById("adminProductSearch")?.value || "").trim().toLowerCase();
+  const products = adminProductsCache.filter(p => {
+    const text = [p.name, p.description, p.price, p.product_type, p.is_active ? "เปิดขาย" : "ปิดขาย", p.categories?.name].join(" ").toLowerCase();
+    return !keyword || text.includes(keyword);
+  });
+
+  box.innerHTML = products.map(p => `
+    <div class="product">
+      <span class="status-pill">${p.is_active ? "เปิดขาย" : "ปิดการขาย"}</span>
+      <h3 style="margin-top:12px;">${escapeHTML(p.name)}</h3>
+      <p class="muted">หมวด: ${escapeHTML(p.categories?.name || "ไม่ระบุ")} • ประเภท: ${escapeHTML(p.product_type)}</p>
+      <p>${escapeHTML(p.description || "-")}</p>
+      <p class="price">${Number(p.price).toFixed(2)} พอยต์</p>
+      <div class="inline-actions">
+        <button class="secondary" onclick="startProductEdit('${p.id}')">แก้ไขสินค้า</button>
+        <button class="${p.is_active ? 'danger' : 'success'}" onclick="adminToggleProduct('${p.id}', ${p.is_active ? 'false' : 'true'})">${p.is_active ? 'ปิดขาย' : 'เปิดขาย'}</button>
+      </div>
+    </div>
+  `).join("") || '<div class="empty-state">ยังไม่มีสินค้า หรือไม่เจอรายการที่ค้นหา</div>';
+}
+
+function clearAdminProductSearch() {
+  const input = document.getElementById("adminProductSearch");
+  if (input) input.value = "";
+  renderAdminProductsList();
+}
+
+function startProductEdit(productId) {
+  const p = adminProductsCache.find(x => x.id === productId);
+  if (!p) return;
+
+  document.getElementById("editProductId").value = p.id;
+  document.getElementById("editProductName").value = p.name || "";
+  document.getElementById("editProductDesc").value = p.description || "";
+  document.getElementById("editProductPrice").value = Number(p.price || 0);
+  document.getElementById("editProductImage").value = p.image_url || "";
+  document.getElementById("editProductType").value = p.product_type || "stock";
+  document.getElementById("editProductActive").value = String(!!p.is_active);
+  document.getElementById("editProductCategory").value = p.category_id || "";
+  document.getElementById("productEditPanel").classList.remove("hidden");
+  document.getElementById("productEditPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function cancelProductEdit() {
+  document.getElementById("productEditPanel").classList.add("hidden");
+}
+
+async function adminSaveProductEdit() {
+  if (currentProfile.role !== "admin") return;
+  const id = document.getElementById("editProductId").value;
+  const payload = {
+    category_id: document.getElementById("editProductCategory").value || null,
+    name: document.getElementById("editProductName").value.trim(),
+    description: document.getElementById("editProductDesc").value.trim(),
+    image_url: document.getElementById("editProductImage").value.trim(),
+    price: Number(document.getElementById("editProductPrice").value),
+    product_type: document.getElementById("editProductType").value,
+    is_active: document.getElementById("editProductActive").value === "true"
+  };
+
+  if (!payload.name || !payload.price) {
+    showToast("กรอกชื่อสินค้าและราคาให้ครบ", "error");
+    return;
+  }
+
+  const { error } = await client.from("products").update(payload).eq("id", id);
+  if (error) {
+    showToast("บันทึกสินค้าไม่สำเร็จ: " + error.message, "error");
+    return;
+  }
+  showToast("บันทึกสินค้าแล้ว");
+  cancelProductEdit();
+  await loadAdminProducts();
+  await loadProducts();
+}
+
+async function adminToggleProduct(productId, active) {
+  if (!(await uiConfirm(active ? "ต้องการเปิดขายสินค้านี้ใช่ไหม?" : "ต้องการปิดการขายสินค้านี้ใช่ไหม?", "จัดการสินค้า"))) return;
+  const { error } = await client.from("products").update({ is_active: active }).eq("id", productId);
+  if (error) {
+    showToast("อัปเดตสินค้าไม่สำเร็จ: " + error.message, "error");
+    return;
+  }
+  showToast("อัปเดตสถานะสินค้าแล้ว");
+  await loadAdminProducts();
+  await loadProducts();
 }
 
 async function adminAddStock() {
@@ -1301,6 +1773,7 @@ async function adminAddStock() {
   document.getElementById("stockData").value = "";
 
   await loadProducts();
+  await loadAdminStockItems();
 }
 
 async function loadAdminCategories() {
@@ -1308,7 +1781,7 @@ async function loadAdminCategories() {
 
   const { data, error } = await client
     .from("categories")
-    .select("id, name")
+    .select("id, name, image_url, is_active, sort_order, created_at")
     .order("sort_order", { ascending: true });
 
   if (error) {
@@ -1316,11 +1789,102 @@ async function loadAdminCategories() {
     return;
   }
 
-  const options = data.map(c => `
-    <option value="${c.id}">${c.name}</option>
+  allCategoriesCache = data || [];
+  const options = allCategoriesCache.map(c => `
+    <option value="${c.id}">${escapeHTML(c.name)}</option>
   `).join("");
 
-  document.getElementById("newProductCategory").innerHTML = options;
+  ["newProductCategory", "editProductCategory"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = options;
+  });
+
+  renderAdminCategoriesList();
+}
+
+function renderAdminCategoriesList() {
+  const box = document.getElementById("adminCategoriesList");
+  if (!box) return;
+
+  box.innerHTML = allCategoriesCache.map(c => `
+    <div class="product">
+      <span class="status-pill">${c.is_active ? "เปิดใช้งาน" : "ปิดไว้"}</span>
+      <h3 style="margin-top:12px;">${escapeHTML(c.name)}</h3>
+      <p class="muted">ลำดับ: ${Number(c.sort_order || 0)} ${c.image_url ? "• มีรูปหมวด" : ""}</p>
+      <div class="inline-actions">
+        <button class="secondary" onclick="adminEditCategory('${c.id}')">แก้ไขหมวด</button>
+        <button class="${c.is_active ? 'danger' : 'success'}" onclick="adminToggleCategory('${c.id}', ${c.is_active ? 'false' : 'true'})">${c.is_active ? 'ปิดหมวด' : 'เปิดหมวด'}</button>
+      </div>
+    </div>
+  `).join("") || '<div class="empty-state">ยังไม่มีหมวดสินค้า</div>';
+}
+
+async function adminAddCategory() {
+  if (currentProfile.role !== "admin") return;
+  const name = document.getElementById("newCategoryName").value.trim();
+  const sort = Number(document.getElementById("newCategorySort").value || 0);
+  const image = document.getElementById("newCategoryImage").value.trim();
+
+  if (!name) {
+    showToast("กรอกชื่อหมวดหมู่ก่อน", "error");
+    return;
+  }
+
+  const { error } = await client.from("categories").insert({
+    name,
+    sort_order: sort,
+    image_url: image,
+    is_active: true
+  });
+
+  if (error) {
+    showToast("เพิ่มหมวดไม่สำเร็จ: " + error.message, "error");
+    return;
+  }
+
+  showToast("เพิ่มหมวดหมู่แล้ว");
+  document.getElementById("newCategoryName").value = "";
+  document.getElementById("newCategorySort").value = "";
+  document.getElementById("newCategoryImage").value = "";
+  await loadAdminCategories();
+}
+
+async function adminEditCategory(categoryId) {
+  const c = allCategoriesCache.find(x => x.id === categoryId);
+  if (!c) return;
+
+  const name = await uiPrompt("แก้ชื่อหมวดหมู่", c.name, "แก้ไขหมวด", "ชื่อหมวด");
+  if (name === null) return;
+  const sortText = await uiPrompt("แก้ลำดับการแสดง", String(c.sort_order || 0), "แก้ไขลำดับ", "ตัวเลขลำดับ");
+  if (sortText === null) return;
+  const imageUrl = await uiPrompt("ลิงก์รูปหมวดหมู่ ถ้าไม่มีปล่อยว่าง", c.image_url || "", "แก้ไขรูปหมวด", "https://...");
+  if (imageUrl === null) return;
+
+  const { error } = await client.from("categories").update({
+    name: name.trim(),
+    sort_order: Number(sortText || 0),
+    image_url: imageUrl.trim()
+  }).eq("id", categoryId);
+
+  if (error) {
+    showToast("แก้ไขหมวดไม่สำเร็จ: " + error.message, "error");
+    return;
+  }
+  showToast("แก้ไขหมวดหมู่แล้ว");
+  await loadAdminCategories();
+  await loadProducts();
+}
+
+async function adminToggleCategory(categoryId, active) {
+  if (!(await uiConfirm(active ? "ต้องการเปิดหมวดนี้ใช่ไหม?" : "ต้องการปิดหมวดนี้ใช่ไหม?", "จัดการหมวดหมู่"))) return;
+  const { error } = await client.from("categories").update({ is_active: active }).eq("id", categoryId);
+  if (error) {
+    showToast("อัปเดตหมวดไม่สำเร็จ: " + error.message, "error");
+    return;
+  }
+  showToast("อัปเดตหมวดหมู่แล้ว");
+  await loadAdminCategories();
+  await loadProducts();
 }
 
 async function adminAddProduct() {
@@ -1334,6 +1898,7 @@ async function adminAddProduct() {
   const description = document.getElementById("newProductDesc").value.trim();
   const price = Number(document.getElementById("newProductPrice").value);
   const productType = document.getElementById("newProductType").value;
+  const imageUrl = document.getElementById("newProductImage")?.value.trim() || "";
 
   if (!categoryId || !name || !price) {
     showToast("กรอกหมวดสินค้า ชื่อสินค้า และราคาให้ครบ", "error");
@@ -1346,7 +1911,7 @@ async function adminAddProduct() {
       category_id: categoryId,
       name: name,
       description: description,
-      image_url: "",
+      image_url: imageUrl,
       price: price,
       product_type: productType,
       is_active: true
@@ -1362,8 +1927,120 @@ async function adminAddProduct() {
   document.getElementById("newProductName").value = "";
   document.getElementById("newProductDesc").value = "";
   document.getElementById("newProductPrice").value = "";
+  if (document.getElementById("newProductImage")) document.getElementById("newProductImage").value = "";
 
   await loadAdminProducts();
+  await loadProducts();
+}
+
+async function loadAdminStockItems() {
+  if (currentProfile.role !== "admin") return;
+  const productId = document.getElementById("stockProduct")?.value;
+  const box = document.getElementById("adminStockList");
+  if (!box) return;
+
+  if (!productId) {
+    adminStockCache = [];
+    renderAdminStockItems();
+    return;
+  }
+
+  const { data, error } = await client
+    .from("stock_items")
+    .select("id, product_id, stock_data, status, created_at, sold_at, sold_to, products(name)")
+    .eq("product_id", productId)
+    .order("created_at", { ascending: false })
+    .limit(80);
+
+  if (error) {
+    box.innerHTML = "<p>โหลดสต๊อกไม่ได้: " + error.message + "</p>";
+    return;
+  }
+
+  adminStockCache = data || [];
+  renderAdminStockItems();
+}
+
+function renderAdminStockItems() {
+  const box = document.getElementById("adminStockList");
+  if (!box) return;
+  const keyword = (document.getElementById("adminStockSearch")?.value || "").trim().toLowerCase();
+
+  const rows = adminStockCache.filter(s => {
+    const text = [s.stock_data, s.status, s.products?.name, s.id].join(" ").toLowerCase();
+    return !keyword || text.includes(keyword);
+  });
+
+  box.innerHTML = rows.map(s => `
+    <div class="product">
+      <span class="status-pill">${escapeHTML(s.status)}</span>
+      <h3 style="margin-top:12px;">${escapeHTML(s.products?.name || "สต๊อกสินค้า")}</h3>
+      <p class="muted">เพิ่มเมื่อ: ${new Date(s.created_at).toLocaleString("th-TH")}${s.sold_at ? ` • ขายเมื่อ: ${new Date(s.sold_at).toLocaleString("th-TH")}` : ""}</p>
+      <pre>${escapeHTML(s.stock_data || "-")}</pre>
+      <div class="inline-actions">
+        <button class="secondary" onclick="startStockEdit('${s.id}')">แก้ไขสต๊อก</button>
+        <button class="success" onclick="adminSetStockStatus('${s.id}', 'available')">พร้อมขาย</button>
+        <button class="danger" onclick="adminSetStockStatus('${s.id}', 'disabled')">ปิดสต๊อก</button>
+      </div>
+    </div>
+  `).join("") || '<div class="empty-state">ยังไม่มีสต๊อกในสินค้านี้ หรือไม่เจอรายการที่ค้นหา</div>';
+}
+
+function clearAdminStockSearch() {
+  const input = document.getElementById("adminStockSearch");
+  if (input) input.value = "";
+  renderAdminStockItems();
+}
+
+function startStockEdit(stockId) {
+  const s = adminStockCache.find(x => x.id === stockId);
+  if (!s) return;
+  document.getElementById("editStockId").value = s.id;
+  document.getElementById("editStockProduct").value = s.product_id;
+  document.getElementById("editStockData").value = s.stock_data || "";
+  document.getElementById("editStockStatus").value = s.status || "available";
+  document.getElementById("stockEditPanel").classList.remove("hidden");
+  document.getElementById("stockEditPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function cancelStockEdit() {
+  document.getElementById("stockEditPanel").classList.add("hidden");
+}
+
+async function adminSaveStockEdit() {
+  if (currentProfile.role !== "admin") return;
+  const id = document.getElementById("editStockId").value;
+  const payload = {
+    product_id: document.getElementById("editStockProduct").value,
+    stock_data: document.getElementById("editStockData").value.trim(),
+    status: document.getElementById("editStockStatus").value
+  };
+
+  if (!payload.product_id || !payload.stock_data) {
+    showToast("เลือกสินค้าและกรอกรายละเอียดสต๊อก", "error");
+    return;
+  }
+
+  const { error } = await client.from("stock_items").update(payload).eq("id", id);
+  if (error) {
+    showToast("บันทึกสต๊อกไม่สำเร็จ: " + error.message, "error");
+    return;
+  }
+  showToast("บันทึกสต๊อกแล้ว");
+  cancelStockEdit();
+  await loadAdminStockItems();
+  await loadProducts();
+}
+
+async function adminSetStockStatus(stockId, status) {
+  if (!(await uiConfirm(`ต้องการเปลี่ยนสถานะสต๊อกเป็น ${status} ใช่ไหม?`, "จัดการสต๊อก"))) return;
+  const { error } = await client.from("stock_items").update({ status }).eq("id", stockId);
+  if (error) {
+    showToast("อัปเดตสต๊อกไม่สำเร็จ: " + error.message, "error");
+    return;
+  }
+  showToast("อัปเดตสต๊อกแล้ว");
+  await loadAdminStockItems();
   await loadProducts();
 }
 
