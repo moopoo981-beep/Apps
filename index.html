@@ -385,8 +385,7 @@
       color: #fff;
       box-shadow: 0 12px 28px rgba(123,76,255,.18);
     }
-    .admin-panel { animation: fadeIn .16s ease; }
-    @keyframes fadeIn { from { opacity: .35; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    .admin-panel { /* animation removed */ }
 
 
     .admin-search-box {
@@ -644,7 +643,7 @@
       to { transform: scale(18); opacity: 0; }
     }
 
-    .product::after, .stat-card::after, .admin-section::after {
+    .product::after, .stat-card::after {
       content: '';
       position: absolute;
       inset: 0;
@@ -654,7 +653,7 @@
       transition: transform .55s ease;
       pointer-events: none;
     }
-    .product:hover::after, .stat-card:hover::after, .admin-section:hover::after {
+    .product:hover::after, .stat-card:hover::after {
       transform: translateX(120%);
     }
     .stat-card, .admin-section { position: relative; overflow: hidden; }
@@ -975,6 +974,124 @@
       .copy-btn { flex: 0 0 auto; }
     }
 
+  </style>
+  <style>
+    /* =========================================================
+       ✨ EXTRA LAYER: Premium micro-interactions (เพิ่มเติม)
+       ไม่แก้ไขโค้ด/คลาสเดิม — เป็นการเสริมมิติและลูกเล่นเท่านั้น
+       ========================================================= */
+
+    /* แถบความก้าวหน้าด้านบนตามการเลื่อนหน้า */
+    .fx-scroll-progress {
+      position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--pink), var(--purple), var(--pink-2));
+      z-index: 9999; border-radius: 0 4px 4px 0;
+      box-shadow: 0 0 14px rgba(255,79,163,.55);
+      transition: width .12s ease-out;
+      pointer-events: none;
+    }
+
+    /* แสงนุ่ม ๆ ลอยตามเคอร์เซอร์ เพิ่มความมีมิติให้พื้นหลัง */
+    .fx-cursor-glow {
+      position: fixed; top: 0; left: 0; width: 360px; height: 360px;
+      border-radius: 50%; pointer-events: none; z-index: 0;
+      background: radial-gradient(circle, rgba(255,124,195,.20), rgba(123,76,255,.08) 45%, transparent 72%);
+      transform: translate(-9999px, -9999px);
+      filter: blur(6px);
+      transition: opacity .4s ease;
+      opacity: 0;
+    }
+    .fx-cursor-glow.fx-on { opacity: 1; }
+
+    /* fx-tilt removed */
+
+    /* fx-reveal removed */
+    .fx-reveal { opacity: 1 !important; transform: none !important; }
+
+    /* เอฟเฟกต์ตอนเปลี่ยนหน้าเมนู */
+    .fx-page-enter { animation: fxPageEnter .45s cubic-bezier(.2,.7,.2,1); }
+    @keyframes fxPageEnter {
+      from { opacity: 0; transform: translateY(16px) scale(.99); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* เครดิตเด้งเมื่อมีการอัปเดตยอด */
+    .fx-credit-pop {
+      animation: fxCreditPop .6s cubic-bezier(.34,1.56,.64,1);
+    }
+    @keyframes fxCreditPop {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(1.16); text-shadow: 0 0 22px rgba(255,79,163,.55); }
+      100% { transform: scale(1); text-shadow: none; }
+    }
+
+    /* ปุ่มเลื่อนกลับขึ้นด้านบน */
+    .fx-scrolltop {
+      position: fixed; right: 18px; bottom: 18px; width: 50px; height: 50px;
+      margin: 0; padding: 0;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: #fff; font-size: 20px; border: none; cursor: pointer;
+      box-shadow: 0 16px 36px rgba(123,76,255,.38);
+      z-index: 998; opacity: 0; transform: translateY(18px) scale(.8); pointer-events: none;
+      transition: opacity .25s ease, transform .25s ease;
+    }
+    .fx-scrolltop.fx-show { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+    .fx-scrolltop:active { transform: scale(.9) !important; }
+
+    /* ป้ายเวลา/ทักทาย แบบไดนามิก ข้างชื่อแอป */
+    .fx-greeting {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700; color: var(--purple);
+      background: rgba(123,76,255,.10);
+      border: 1px solid rgba(123,76,255,.18);
+      border-radius: 999px; padding: 4px 10px; margin-top: 4px;
+      white-space: nowrap;
+    }
+    .fx-greeting .fx-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--green);
+      box-shadow: 0 0 0 0 rgba(22,163,109,.55);
+      animation: fxPulseDot 2s ease-out infinite;
+    }
+    @keyframes fxPulseDot {
+      0%   { box-shadow: 0 0 0 0 rgba(22,163,109,.55); }
+      70%  { box-shadow: 0 0 0 6px rgba(22,163,109,0); }
+      100% { box-shadow: 0 0 0 0 rgba(22,163,109,0); }
+    }
+
+    /* แสงไล้ผ่านปุ่มเมื่อ hover เพิ่มความพรีเมียม */
+    button::before, .btn::before {
+      content: "";
+      position: absolute; top: 0; left: -130%; width: 55%; height: 100%;
+      background: linear-gradient(115deg, transparent, rgba(255,255,255,.38), transparent);
+      transform: skewX(-18deg);
+      transition: left .6s ease;
+      pointer-events: none;
+    }
+    button:hover::before, .btn:hover::before { left: 135%; }
+
+    /* คอนเฟตตี้แสดงผลตอนสำเร็จ */
+    .fx-confetti-piece {
+      position: fixed; top: -12px; border-radius: 2px; pointer-events: none; z-index: 10000;
+      animation: fxConfettiFall linear forwards;
+    }
+    @keyframes fxConfettiFall {
+      to { transform: translateY(110vh) rotate(640deg); opacity: 0; }
+    }
+
+    @media (max-width: 560px) {
+      .fx-cursor-glow { display: none; }
+      .fx-scrolltop { right: 12px; bottom: 14px; width: 46px; height: 46px; font-size: 18px; }
+      .fx-greeting { font-size: 10px; padding: 3px 8px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fx-tilt, .fx-reveal, .fx-page-enter, .fx-credit-pop, .fx-cursor-glow,
+      .fx-scrolltop, button::before, .btn::before, .fx-greeting .fx-dot {
+        animation: none !important; transition: none !important;
+      }
+      .fx-reveal { opacity: 1; transform: none; }
+    }
   </style>
 </head>
 <body>
@@ -2295,6 +2412,7 @@ function renderAdminStockItems() {
   const keyword = (document.getElementById("adminStockSearch")?.value || "").trim().toLowerCase();
 
   const rows = adminStockCache.filter(s => {
+    if (!keyword && s.status === "sold") return false; // ซ่อนสต๊อกที่ขายแล้ว (เว้นแต่ค้นหาเอง)
     const text = [s.stock_data, s.status, s.products?.name, s.id].join(" ").toLowerCase();
     return !keyword || text.includes(keyword);
   });
@@ -2636,12 +2754,13 @@ async function approveTopup(topupId) {
 
 
 async function rejectTopup(topupId) {
-  const note = (await uiPrompt("เหตุผลที่ปฏิเสธ เช่น สลิปไม่ชัด / ยอดไม่ตรง", "", "ปฏิเสธรายการ")) || "";
+  const note = await uiPrompt("เหตุผลที่ปฏิเสธ เช่น สลิปไม่ชัด / ยอดไม่ตรง", "", "ปฏิเสธรายการ");
+  if (note === null) return;
 
-  const { error } = await client.rpc("admin_reject_topup", {
-    p_topup_id: topupId,
-    p_note: note
-  });
+  const { error } = await client
+    .from("topups")
+    .update({ status: "rejected", note: note || "" })
+    .eq("id", topupId);
 
   if (error) {
     showToast("ปฏิเสธไม่สำเร็จ: " + error.message, "error");
@@ -2684,6 +2803,7 @@ async function loadAdminMembers() {
       <button class="secondary" onclick="adjustMemberCredit('${member.id}', '${member.username}')">เติม/ลบเครดิต</button>
       <button class="secondary" onclick="setMemberRole('${member.id}', 'agent')">ปรับเป็นตัวแทนปกติ</button>
       <button class="danger" onclick="setMemberStatus('${member.id}', 'blocked')">ระงับบัญชี</button>
+      <button class="delete-soft" onclick="deleteMember('${member.id}', '${member.username.replace(/'/g, "&#039;")}')">ลบสมาชิก</button>
     </div>
   `).join("");
 
@@ -2779,6 +2899,47 @@ async function adjustMemberCredit(memberId, username) {
 
   await loadAdminMembers();
   await loadProfile();
+}
+
+async function deleteMember(memberId, username) {
+  if (currentProfile.role !== "admin") {
+    showToast("เฉพาะแอดมินเท่านั้น", "error");
+    return;
+  }
+
+  if (!(await uiConfirm(
+    `ต้องการลบสมาชิก "${username}" ออกจากระบบใช่ไหม?\nข้อมูลโปรไฟล์จะถูกลบ แต่ประวัติออเดอร์อาจยังอยู่เพื่อความปลอดภัย`,
+    "ลบสมาชิก"
+  ))) return;
+
+  const { error } = await client
+    .from("profiles")
+    .delete()
+    .eq("id", memberId);
+
+  if (error) {
+    const fallback = await uiConfirm(
+      "ลบสมาชิกแบบถาวรไม่ได้ อาจเพราะมีข้อมูลออเดอร์หรือเครดิตผูกอยู่\nต้องการระงับบัญชีแทนไหม?",
+      "ลบสมาชิกไม่สำเร็จ"
+    );
+    if (fallback) {
+      const { error: blockError } = await client
+        .from("profiles")
+        .update({ status: "blocked" })
+        .eq("id", memberId);
+      if (blockError) {
+        showToast("ระงับบัญชีไม่สำเร็จ: " + blockError.message, "error");
+        return;
+      }
+      showToast("ระงับบัญชีแทนการลบแล้ว");
+    } else {
+      showToast("ลบสมาชิกไม่สำเร็จ: " + error.message, "error", 4200);
+    }
+  } else {
+    showToast("ลบสมาชิกแล้ว");
+  }
+
+  await loadAdminMembers();
 }
 
 async function loadCreditLogs() {
@@ -2967,5 +3128,437 @@ async function adminRefundOrder(orderId) {
 }
   init();
 </script>
+
+<script>
+  /* =========================================================
+     ✨ EXTRA LAYER: Premium micro-interactions (เพิ่มเติม)
+     สคริปต์นี้ไม่แก้ไขฟังก์ชันเดิม มีแต่ "เสริม" พฤติกรรมเดิม
+     ให้มีมิติ ลูกเล่น และความรู้สึกพรีเมียมมากขึ้น
+     ========================================================= */
+  (function () {
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* ---------- 1) แถบความก้าวหน้าด้านบน ---------- */
+    const fxProgress = document.createElement('div');
+    fxProgress.className = 'fx-scroll-progress';
+    document.body.appendChild(fxProgress);
+    function fxUpdateProgress() {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docHeight > 0 ? Math.min(100, Math.max(0, (scrollTop / docHeight) * 100)) : 0;
+      fxProgress.style.width = pct + '%';
+    }
+    window.addEventListener('scroll', fxUpdateProgress, { passive: true });
+    window.addEventListener('resize', fxUpdateProgress);
+    fxUpdateProgress();
+
+    /* ---------- 2) ปุ่มเลื่อนกลับขึ้นบนสุด ---------- */
+    const fxTopBtn = document.createElement('button');
+    fxTopBtn.type = 'button';
+    fxTopBtn.className = 'fx-scrolltop';
+    fxTopBtn.setAttribute('aria-label', 'เลื่อนกลับขึ้นด้านบน');
+    fxTopBtn.innerHTML = '↑';
+    document.body.appendChild(fxTopBtn);
+    fxTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    });
+    window.addEventListener('scroll', () => {
+      fxTopBtn.classList.toggle('fx-show', window.scrollY > 380);
+    }, { passive: true });
+
+    /* ---------- 3) แสงลอยตามเคอร์เซอร์ ---------- */
+    if (!reduceMotion && window.matchMedia && window.matchMedia('(pointer: fine)').matches) {
+      const fxGlow = document.createElement('div');
+      fxGlow.className = 'fx-cursor-glow';
+      document.body.appendChild(fxGlow);
+      document.addEventListener('pointermove', (e) => {
+        fxGlow.style.transform = `translate(${e.clientX - 180}px, ${e.clientY - 180}px)`;
+        fxGlow.classList.add('fx-on');
+      });
+      document.addEventListener('pointerleave', () => fxGlow.classList.remove('fx-on'));
+    }
+
+    /* 3D tilt removed */
+
+    /* scroll reveal removed */
+
+    /* ---------- 6) เครดิตเด้ง + นับเลขขึ้นเมื่ออัปเดต ---------- */
+    const creditEl = document.getElementById('myCredit');
+    if (creditEl) {
+      let lastVal = parseFloat(creditEl.textContent) || 0;
+      let animating = false;
+      const creditObserver = new MutationObserver(() => {
+        if (animating) return;
+        const target = parseFloat(creditEl.textContent);
+        if (isNaN(target) || Math.abs(target - lastVal) < 0.005) { lastVal = isNaN(target) ? lastVal : target; return; }
+        if (reduceMotion) {
+          lastVal = target;
+          creditEl.classList.remove('fx-credit-pop');
+          requestAnimationFrame(() => creditEl.classList.add('fx-credit-pop'));
+          return;
+        }
+        const start = lastVal;
+        const diff = target - start;
+        const duration = 650;
+        const t0 = performance.now();
+        animating = true;
+        creditEl.classList.remove('fx-credit-pop');
+        function frame(now) {
+          const p = Math.min((now - t0) / duration, 1);
+          const eased = 1 - Math.pow(1 - p, 3);
+          const cur = start + diff * eased;
+          creditEl.textContent = cur.toFixed(2);
+          if (p < 1) {
+            requestAnimationFrame(frame);
+          } else {
+            creditEl.textContent = target.toFixed(2);
+            lastVal = target;
+            animating = false;
+            creditEl.classList.add('fx-credit-pop');
+          }
+        }
+        requestAnimationFrame(frame);
+      });
+      creditObserver.observe(creditEl, { childList: true, characterData: true, subtree: true });
+    }
+
+    /* ---------- 7) คอนเฟตตี้ตอนทำรายการสำเร็จ ---------- */
+    function fxConfettiBurst() {
+      if (reduceMotion) return;
+      const colors = ['#ff4fa3', '#7b4cff', '#ffd166', '#16a36d', '#ff7cc3'];
+      const count = 22;
+      for (let i = 0; i < count; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'fx-confetti-piece';
+        const size = 6 + Math.random() * 6;
+        piece.style.width = size + 'px';
+        piece.style.height = (size * 0.45) + 'px';
+        piece.style.left = (Math.random() * 100) + 'vw';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.opacity = String(0.85 + Math.random() * 0.15);
+        const duration = 2.2 + Math.random() * 1.6;
+        piece.style.animationDuration = duration + 's';
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), (duration + 0.3) * 1000);
+      }
+    }
+    if (typeof window.showToast === 'function') {
+      const fxOrigShowToast = window.showToast;
+      window.showToast = function (message, type, duration) {
+        fxOrigShowToast(message, type, duration);
+        if (type !== 'error') fxConfettiBurst();
+      };
+    }
+
+    /* ---------- 8) ทรานซิชันตอนเปลี่ยนหน้าเมนู ---------- */
+    if (typeof window.showPage === 'function') {
+      const fxOrigShowPage = window.showPage;
+      const fxPageIds = {
+        home: 'homePage',
+        products: 'productsPage',
+        history: 'historyPage',
+        topup: 'topupPage',
+        creditHistory: 'creditHistoryPage',
+        admin: 'adminPage'
+      };
+      window.showPage = function (page) {
+        fxOrigShowPage(page);
+        const id = fxPageIds[page];
+        const el = id && document.getElementById(id);
+        if (el && !reduceMotion) {
+          el.classList.remove('fx-page-enter');
+          requestAnimationFrame(() => el.classList.add('fx-page-enter'));
+        }
+        setTimeout(() => {}, 80);
+      };
+    }
+
+    /* ---------- 9) ป้ายทักทาย/สถานะระบบแบบไดนามิก ---------- */
+    const fxSubtitle = document.querySelector('.brand-subtitle');
+    if (fxSubtitle) {
+      const fxBadge = document.createElement('div');
+      fxBadge.className = 'fx-greeting';
+      fxBadge.innerHTML = '<span class="fx-dot"></span><span class="fx-greeting-text"></span>';
+      fxSubtitle.insertAdjacentElement('afterend', fxBadge);
+      const fxGreetingText = fxBadge.querySelector('.fx-greeting-text');
+      function fxUpdateGreeting() {
+        const h = new Date().getHours();
+        let text;
+        if (h < 6) text = '🌙 ระบบออนไลน์ตลอด 24 ชม.';
+        else if (h < 12) text = '☀️ สวัสดีตอนเช้า ระบบพร้อมใช้งาน';
+        else if (h < 18) text = '🌤️ ระบบออนไลน์อยู่ ใช้งานได้เลย';
+        else text = '🌙 สวัสดีตอนเย็น ระบบออนไลน์อยู่';
+        fxGreetingText.textContent = text;
+      }
+      fxUpdateGreeting();
+      setInterval(fxUpdateGreeting, 60000);
+    }
+  })();
+</script>
+
+<!-- ===== 🐱 Walking Cat Character ===== -->
+<div id="walky-cat" style="
+  position: fixed;
+  bottom: 80px;
+  left: -90px;
+  z-index: 9999;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
+">
+  <div id="cat-bubble" style="
+    position: absolute;
+    bottom: 62px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255,255,255,.94);
+    border: 1.5px solid rgba(255,79,163,.28);
+    color: #7b4cff;
+    font-family: 'Prompt', sans-serif;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+    box-shadow: 0 4px 16px rgba(123,76,255,.18);
+    opacity: 0;
+    transition: opacity .3s;
+    pointer-events: none;
+  "></div>
+
+  <svg id="cat-svg" viewBox="0 0 80 60" width="80" height="60" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible;">
+    <!-- ===== Body ===== -->
+    <ellipse cx="40" cy="38" rx="22" ry="16" fill="#f4c0e0"/>
+    <!-- Belly patch -->
+    <ellipse cx="40" cy="40" rx="13" ry="10" fill="#ffe8f4"/>
+
+    <!-- ===== Head ===== -->
+    <circle cx="40" cy="20" r="17" fill="#f4c0e0"/>
+    <!-- Ear left -->
+    <polygon points="21,9 15,0 28,7" fill="#f4c0e0"/>
+    <polygon points="23,8 18,3 27,7" fill="#ffaad6"/>
+    <!-- Ear right -->
+    <polygon points="59,9 65,0 52,7" fill="#f4c0e0"/>
+    <polygon points="57,8 62,3 53,7" fill="#ffaad6"/>
+
+    <!-- ===== Face ===== -->
+    <!-- Eyes -->
+    <ellipse id="eye-l" cx="33" cy="19" rx="4" ry="4.5" fill="white"/>
+    <circle id="pupil-l" cx="33" cy="19.5" r="2.5" fill="#3d1a6e"/>
+    <circle cx="32" cy="18.5" r=".9" fill="white"/>
+    <!-- Eye shine left -->
+
+    <ellipse id="eye-r" cx="47" cy="19" rx="4" ry="4.5" fill="white"/>
+    <circle id="pupil-r" cx="47" cy="19.5" r="2.5" fill="#3d1a6e"/>
+    <circle cx="46" cy="18.5" r=".9" fill="white"/>
+
+    <!-- Nose -->
+    <ellipse cx="40" cy="25" rx="2.2" ry="1.5" fill="#ff7cc3"/>
+    <!-- Mouth -->
+    <path d="M37.5 26.5 Q40 29 42.5 26.5" fill="none" stroke="#e0609a" stroke-width="1.2" stroke-linecap="round"/>
+
+    <!-- Whiskers left -->
+    <line x1="23" y1="24" x2="36" y2="25.5" stroke="#d080b0" stroke-width=".9" stroke-linecap="round"/>
+    <line x1="22" y1="26.5" x2="36" y2="26.5" stroke="#d080b0" stroke-width=".9" stroke-linecap="round"/>
+    <!-- Whiskers right -->
+    <line x1="57" y1="24" x2="44" y2="25.5" stroke="#d080b0" stroke-width=".9" stroke-linecap="round"/>
+    <line x1="58" y1="26.5" x2="44" y2="26.5" stroke="#d080b0" stroke-width=".9" stroke-linecap="round"/>
+
+    <!-- Blush -->
+    <ellipse cx="28" cy="27" rx="4" ry="2.5" fill="rgba(255,100,160,.22)"/>
+    <ellipse cx="52" cy="27" rx="4" ry="2.5" fill="rgba(255,100,160,.22)"/>
+
+    <!-- ===== Tail ===== -->
+    <path id="cat-tail" d="M62 44 Q72 34 68 26 Q64 20 70 18" fill="none" stroke="#f4c0e0" stroke-width="5" stroke-linecap="round"/>
+
+    <!-- ===== Legs (walk animation via transform) ===== -->
+    <rect id="leg-fl" x="28" y="51" width="8" height="14" rx="4" fill="#f4c0e0"/>
+    <rect id="leg-fr" x="38" y="51" width="8" height="14" rx="4" fill="#f4c0e0"/>
+    <rect id="leg-bl" x="22" y="51" width="7" height="13" rx="3.5" fill="#e8a8cc"/>
+    <rect id="leg-br" x="50" y="51" width="7" height="13" rx="3.5" fill="#e8a8cc"/>
+
+    <!-- Collar -->
+    <path d="M24 34 Q40 39 56 34" fill="none" stroke="#7b4cff" stroke-width="3.5" stroke-linecap="round"/>
+    <!-- Bell -->
+    <circle cx="40" cy="36.5" r="3" fill="#ffd166"/>
+    <ellipse cx="40" cy="38.8" rx="1.5" ry="1" fill="#e8b400"/>
+  </svg>
+</div>
+
+<style>
+  #walky-cat { filter: drop-shadow(0 6px 18px rgba(255,79,163,.28)); }
+
+  @keyframes cat-leg-fl {
+    0%,100% { transform: rotate(-18deg) translateY(0); transform-origin: 32px 51px; }
+    50% { transform: rotate(18deg) translateY(-2px); transform-origin: 32px 51px; }
+  }
+  @keyframes cat-leg-fr {
+    0%,100% { transform: rotate(18deg) translateY(-2px); transform-origin: 42px 51px; }
+    50% { transform: rotate(-18deg) translateY(0); transform-origin: 42px 51px; }
+  }
+  @keyframes cat-leg-bl {
+    0%,100% { transform: rotate(-12deg); transform-origin: 25px 51px; }
+    50% { transform: rotate(12deg); transform-origin: 25px 51px; }
+  }
+  @keyframes cat-leg-br {
+    0%,100% { transform: rotate(12deg); transform-origin: 53px 51px; }
+    50% { transform: rotate(-12deg); transform-origin: 53px 51px; }
+  }
+  @keyframes cat-tail-sway {
+    0%,100% { transform: rotate(-8deg); transform-origin: 62px 44px; }
+    50% { transform: rotate(8deg); transform-origin: 62px 44px; }
+  }
+  @keyframes cat-blink {
+    0%,92%,100% { transform: scaleY(1); }
+    96% { transform: scaleY(.08); }
+  }
+  @keyframes cat-body-bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+  }
+
+  #leg-fl { animation: cat-leg-fl .45s ease-in-out infinite; }
+  #leg-fr { animation: cat-leg-fr .45s ease-in-out infinite; }
+  #leg-bl { animation: cat-leg-bl .45s ease-in-out infinite; }
+  #leg-br { animation: cat-leg-br .45s ease-in-out infinite; }
+  #cat-tail { animation: cat-tail-sway 1.2s ease-in-out infinite; }
+  #eye-l, #eye-r, #pupil-l, #pupil-r { animation: cat-blink 4s ease-in-out infinite; transform-origin: 40px 19px; }
+  #cat-svg { animation: cat-body-bounce .45s ease-in-out infinite; }
+</style>
+
+<script>
+(function() {
+  'use strict';
+  var cat = document.getElementById('walky-cat');
+  var bubble = document.getElementById('cat-bubble');
+  var svg = document.getElementById('cat-svg');
+  if (!cat) return;
+
+  var W = window.innerWidth;
+  var x = -90;
+  var dir = 1; // 1 = right, -1 = left
+  var speed = 1.4;
+  var paused = false;
+  var bubbleTimer = null;
+
+  var messages = [
+    '🐱 เหมียว~',
+    '💜 สวัสดีจ้า',
+    '⭐ ซื้อสินค้าเลยนะ!',
+    '🎀 น่ารักม้ากก',
+    '🛍️ มีของใหม่แล้วนะ',
+    '🐟 หิวปลาอ่ะ...',
+    '✨ เติมเครดิตด้วยนะ',
+    '🎵 หน่อยยย~',
+  ];
+
+  function showBubble() {
+    var msg = messages[Math.floor(Math.random() * messages.length)];
+    bubble.textContent = msg;
+    bubble.style.opacity = '1';
+    if (bubbleTimer) clearTimeout(bubbleTimer);
+    bubbleTimer = setTimeout(function() {
+      bubble.style.opacity = '0';
+    }, 2200);
+  }
+
+  // Show bubble randomly while walking
+  setInterval(function() {
+    if (!paused && Math.random() < 0.28) showBubble();
+  }, 3500);
+
+  var lastTime = null;
+  function walk(ts) {
+    if (lastTime === null) lastTime = ts;
+    var dt = Math.min(ts - lastTime, 50);
+    lastTime = ts;
+
+    W = window.innerWidth;
+
+    if (!paused) {
+      x += dir * speed * (dt / 16.67);
+
+      // Flip at edges
+      if (dir === 1 && x > W + 20) {
+        dir = -1;
+        svg.style.transform = 'scaleX(-1)';
+        x = W + 20;
+      } else if (dir === -1 && x < -90) {
+        dir = 1;
+        svg.style.transform = 'scaleX(1)';
+        x = -90;
+      }
+      cat.style.left = x + 'px';
+    }
+    requestAnimationFrame(walk);
+  }
+  requestAnimationFrame(walk);
+
+  // Pause on hover / touch (show bubble)
+  cat.style.pointerEvents = 'auto';
+  cat.style.cursor = 'pointer';
+  cat.addEventListener('mouseenter', function() {
+    paused = true;
+    showBubble();
+    // stop walk animation
+    document.querySelectorAll('#leg-fl,#leg-fr,#leg-bl,#leg-br,#cat-svg').forEach(function(el) {
+      el.style.animationPlayState = 'paused';
+    });
+  });
+  cat.addEventListener('mouseleave', function() {
+    paused = false;
+    document.querySelectorAll('#leg-fl,#leg-fr,#leg-bl,#leg-br,#cat-svg').forEach(function(el) {
+      el.style.animationPlayState = 'running';
+    });
+  });
+  cat.addEventListener('click', function() {
+    showBubble();
+    if (navigator.vibrate) navigator.vibrate(40);
+  });
+})();
+</script>
+<!-- ===== LINE Floating Button ===== -->
+<a id="line-float-btn" href="https://line.me/R/ti/p/@303erjeq?oat_content=url&ts=06092315" target="_blank" rel="noopener" aria-label="ติดต่อแอดมินทาง LINE">
+  <svg viewBox="0 0 40 40" width="26" height="26" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20 4C11.16 4 4 10.26 4 17.96c0 6.97 5.76 12.8 13.54 13.78.53.11 1.24.35 1.42.8.16.41.1 1.05.05 1.46l-.23 1.38c-.07.41-.33 1.61 1.41.88 1.74-.74 9.38-5.52 12.8-9.45C35.5 24.07 36 21.12 36 17.96 36 10.26 28.84 4 20 4z" fill="white"/>
+    <path d="M29.1 22.3h-4.62a.35.35 0 01-.35-.35v-7.18a.35.35 0 01.35-.35h4.62a.35.35 0 01.35.35v1.17a.35.35 0 01-.35.35H26v1.15h3.1a.35.35 0 01.35.35v1.17a.35.35 0 01-.35.35H26v1.15h3.1a.35.35 0 01.35.35v1.17a.35.35 0 01-.35.35zM14.27 22.3a.35.35 0 00.35-.35v-1.17a.35.35 0 00-.35-.35h-3.1v-5.66a.35.35 0 00-.35-.35h-1.17a.35.35 0 00-.35.35v7.18a.35.35 0 00.35.35h4.62zm3.52 0h-1.17a.35.35 0 01-.35-.35v-7.18a.35.35 0 01.35-.35h1.17a.35.35 0 01.35.35v7.18a.35.35 0 01-.35.35zm7.04-7.88h-1.17a.35.35 0 00-.35.35v4.27l-3.29-4.45-.04-.05-.01-.01-.03-.03-.01-.01-.03-.02h-.01l-.03-.02h-.01l-.03-.01h-1.21a.35.35 0 00-.35.35v7.18a.35.35 0 00.35.35h1.17a.35.35 0 00.35-.35v-4.27l3.3 4.46a.35.35 0 00.09.08l.02.01.03.02h.01l.04.01h1.24a.35.35 0 00.35-.35v-7.18a.35.35 0 00-.35-.35z" fill="#06C755"/>
+  </svg>
+  <span>LINE แอดมิน</span>
+</a>
+<style>
+  #line-float-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 20px;
+    z-index: 9990;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 16px 11px 12px;
+    border-radius: 999px;
+    background: #06C755;
+    color: #fff;
+    font-family: 'Prompt', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 6px 24px rgba(6,199,85,.38);
+    border: none;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  #line-float-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(6,199,85,.45);
+  }
+  #line-float-btn:active { transform: scale(.96); }
+  @media (max-width: 520px) {
+    #line-float-btn span { display: none; }
+    #line-float-btn { padding: 12px; border-radius: 50%; }
+  }
+</style>
+
 </body>
 </html>
